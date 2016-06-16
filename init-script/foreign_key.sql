@@ -1,0 +1,3 @@
+alter table dsi_login add constraint UK_email  unique (email);
+
+alter table dsi_tenant add constraint FK_authHandlerID foreign key (auth_handler_id) references ref_auth_handler (auth_handler_id);

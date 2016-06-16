@@ -18,8 +18,8 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public Login getLoginInfo(String loginID, String email) {
-        return dao.getLoginInfo(loginID, email);
+    public Login getLoginInfo(String userID, String email) {
+        return dao.getLoginInfo(userID, email);
     }
 
     @Override

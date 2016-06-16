@@ -57,20 +57,13 @@ public class TokenResource {
                 request.getAttribute("access_token").toString() : null;
 
         JSONObject responseObj = new JSONObject();
-        JSONObject parseObj;
         try{
-            if (accessToken != null) {
+            if (!Utils.isNullOrEmpty(accessToken)) {
 
                 Claims parseToken = tokenService.parseToken(accessToken);
                 if (parseToken != null) {
 
-                    String subject = parseToken.getSubject();
-                    logger.info("Parse object: " + subject);
-
-                    parseObj = new JSONObject(subject);
-                    String userID = Utils.validation(parseObj, "user_id");
-
-                    UserSession userSession = userSessionService.getUserSessionByUserIdAndAccessToken(userID, accessToken);
+                    UserSession userSession = userSessionService.getUserSessionByUserIdAndAccessToken(parseToken.getId(), accessToken);
                     if(userSession != null){
                         String newAccessToken = tokenService.createToken(parseToken.getId(), parseToken.getIssuer(),
                                 parseToken.getSubject(), Constants.TIME_INTERVAL);
@@ -80,7 +73,7 @@ public class TokenResource {
 
                         userSession.setAccessToken(newAccessToken);
                         userSession.setModifiedDate(Utils.today());
-                        userSession.setModifiedBy(userID);
+                        userSession.setModifiedBy(parseToken.getId());
                         userSessionService.updateUserSession(userSession);
                         logger.info("User session updated successfully.");
 

@@ -121,20 +121,13 @@ public class LoginResource {
                 request.getAttribute("access_token").toString() : null;
 
         JSONObject responseObj = new JSONObject();
-        JSONObject parseObj;
         try {
-            if (accessToken != null) {
+            if (!Utils.isNullOrEmpty(accessToken)) {
 
                 Claims parseToken = tokenService.parseToken(accessToken);
                 if(parseToken != null){
 
-                    String subject = parseToken.getSubject();
-                    logger.info("Parse object: " + subject);
-
-                    parseObj = new JSONObject(subject);
-                    String userID = Utils.validation(parseObj, "user_id");
-
-                    UserSession userSession = userSessionService.getUserSessionByUserIdAndAccessToken(userID, accessToken);
+                    UserSession userSession = userSessionService.getUserSessionByUserIdAndAccessToken(parseToken.getId(), accessToken);
                     if(userSession != null){
                         userSessionService.deleteUserSession(userSession);
                         logger.info("Delete user session successfully.");
@@ -162,19 +155,18 @@ public class LoginResource {
 
         JSONObject responseObj = new JSONObject();
         try {
-            if (accessToken != null) {
+            if (!Utils.isNullOrEmpty(accessToken)) {
 
                 Claims parseToken = tokenService.parseToken(accessToken);
                 if (parseToken != null) {
 
-                    String subject = parseToken.getSubject();
-                    logger.info("ParseToken Subject: " + subject);
-
-                    responseObj = new JSONObject(subject);
-                    String userID = Utils.validation(responseObj, "user_id");
-
-                    UserSession userSession = userSessionService.getUserSessionByUserIdAndAccessToken(userID, accessToken);
+                    UserSession userSession = userSessionService.getUserSessionByUserIdAndAccessToken(parseToken.getId(), accessToken);
                     if(userSession != null){
+
+                        String subject = parseToken.getSubject();
+                        logger.info("ParseToken Subject: " + subject);
+
+                        responseObj = new JSONObject(subject);
                         logger.info("Login into: " + responseObj.toString());
                         return Response.ok().entity(responseObj.toString()).build();
                     }

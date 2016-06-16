@@ -9,7 +9,7 @@ public interface LoginDao {
 
     void updateLoginInfo(Login login);
 
-    Login getLoginInfo(String loginID, String email);
+    Login getLoginInfo(String userID, String email);
 
     Login getLoginInfoByResetToken(String resetToken);
 }

@@ -20,20 +20,20 @@ public class LoginDaoImpl extends BaseDao implements LoginDao {
     }
 
     @Override
-    public Login getLoginInfo(String loginID, String email) {
+    public Login getLoginInfo(String userID, String email) {
         Session session = null;
         Login login = null;
         try{
             session = getSession();
             Query query;
 
-            if(loginID == null){
+            if(userID == null){
                 query = session.createQuery("FROM Login l WHERE l.email =:email");
                 query.setParameter("email", email);
 
             }else{
-                query = session.createQuery("FROM Login l WHERE l.loginId =:loginID");
-                query.setParameter("loginID", loginID);
+                query = session.createQuery("FROM Login l WHERE l.userId =:userID");
+                query.setParameter("userID", userID);
             }
             login = (Login) query.uniqueResult();
 

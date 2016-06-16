@@ -14,11 +14,14 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
+import io.jsonwebtoken.Claims;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONObject;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -36,7 +39,9 @@ public class PasswordResource {
 
     private static final TokenServiceImpl tokenService = new TokenServiceImpl();
     private static final LoginService loginService = new LoginServiceImpl();
-    private static final UserSessionService userSessionService = new UserSessionServiceImpl();
+
+    @Context
+    HttpServletRequest request;
 
     @POST
     @Path("/reset")
@@ -119,6 +124,57 @@ public class PasswordResource {
             }
         } catch (Exception e){
             logger.error("Failed to change password from reset request: " + e.getMessage());
+        }
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseObj.toString()).build();
+    }
+
+    @POST
+    @Path("/change")
+    @ApiOperation(value = "Change Password", notes = "Change Password", position = 7)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Change password success"),
+            @ApiResponse(code = 500, message = "change password failed, unauthorized.")
+    })
+    public Response changePassword(String requestBody){
+        String accessToken = request.getAttribute("access_token") != null ?
+                request.getAttribute("access_token").toString() : null;
+
+        JSONObject responseObj = new JSONObject();
+        JSONObject requestObj;
+        try{
+            logger.info("Request Body: " + requestBody);
+
+            requestObj = new JSONObject(requestBody);
+            String oldPassword = Utils.validation(requestObj, "old_password");
+            String newPassword = Utils.validation(requestObj, "new_password");
+            String confirmPassword = Utils.validation(requestObj, "confirm_password");
+
+            if(!Utils.isNullOrEmpty(oldPassword) && !Utils.isNullOrEmpty(newPassword)
+                    && !Utils.isNullOrEmpty(confirmPassword) && !Utils.isNullOrEmpty(accessToken)){
+
+                Claims parseToken = tokenService.parseToken(accessToken);
+                if(parseToken != null) {
+
+                    Login login = loginService.getLoginInfo(parseToken.getId(), null);
+                    if(login != null && newPassword.equals(confirmPassword)){
+
+                        String hashPassword = PasswordSaltUtil.hash(oldPassword, login.getSalt());
+                        if(hashPassword.equals(login.getPassword())){
+
+                            String newHashPassword = PasswordSaltUtil.hash(newPassword, login.getSalt());
+                            login.setPassword(newHashPassword);
+                            login.setModifiedDate(Utils.today());
+                            loginService.updateLoginInfo(login);
+                            logger.info("Update login info successfully.");
+
+                            responseObj.put("message", "Password change success");
+                            return Response.ok().entity(responseObj.toString()).build();
+                        }
+                    }
+                }
+            }
+        } catch (Exception e){
+            logger.error("Failed to change password: " + e.getMessage());
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseObj.toString()).build();
     }

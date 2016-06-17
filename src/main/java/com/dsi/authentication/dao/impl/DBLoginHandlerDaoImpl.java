@@ -2,7 +2,7 @@ package com.dsi.authentication.dao.impl;
 
 import com.dsi.authentication.dao.DBLoginHandlerDao;
 import com.dsi.authentication.model.Login;
-import com.dsi.authentication.util.PasswordSaltUtil;
+import com.dsi.authentication.util.PasswordHash;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -25,7 +25,7 @@ public class DBLoginHandlerDaoImpl extends BaseDao implements DBLoginHandlerDao 
 
             login = (Login) query.uniqueResult();
             if(login != null){
-                String hash = PasswordSaltUtil.hash(password, login.getSalt());
+                String hash = PasswordHash.hash(password, login.getSalt());
                 if(!hash.equals(login.getPassword())){
                     login = null;
                 }

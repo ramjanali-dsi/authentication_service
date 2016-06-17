@@ -1,5 +1,6 @@
 package com.dsi.authentication.util;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.util.Base64;
@@ -10,7 +11,9 @@ import java.util.UUID;
 /**
  * Created by sabbir on 6/13/16.
  */
-public class Utils {
+public class Utility {
+
+    private static final Logger logger = Logger.getLogger(Utility.class);
 
     public static boolean isNullOrEmpty(String s){
 

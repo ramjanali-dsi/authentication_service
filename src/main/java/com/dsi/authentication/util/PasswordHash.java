@@ -5,19 +5,17 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
 
 /**
  * Created by sabbir on 6/15/16.
  */
-public class PasswordSaltUtil {
+public class PasswordHash {
 
     private static final int iterations = 1000;
     private static final int desiredKeyLen = 64 * 8;
 
     public static String hash(String password, String salts) throws Exception {
-        if (Utils.isNullOrEmpty(password))
+        if (Utility.isNullOrEmpty(password))
             throw new IllegalArgumentException("Empty passwords are not supported.");
 
         byte[] salt = salts.getBytes();

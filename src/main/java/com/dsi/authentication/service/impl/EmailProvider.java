@@ -39,6 +39,7 @@ public class EmailProvider {
 
     public static boolean constructResetPasswordRequestToken(String recipientEmail, String url){
         new Thread(new Runnable() {
+
             @Override
             public void run() {
                 try {

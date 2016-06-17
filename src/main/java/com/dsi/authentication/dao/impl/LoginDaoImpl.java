@@ -2,7 +2,7 @@ package com.dsi.authentication.dao.impl;
 
 import com.dsi.authentication.dao.LoginDao;
 import com.dsi.authentication.model.Login;
-import com.dsi.authentication.util.Utils;
+import com.dsi.authentication.util.Utility;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -55,7 +55,7 @@ public class LoginDaoImpl extends BaseDao implements LoginDao {
             session = getSession();
             Query query = session.createQuery("FROM Login l WHERE l.resetPasswordToken =:resetToken AND l.resetTokenExpireTime >=:curDate");
             query.setParameter("resetToken", resetToken);
-            query.setParameter("curDate", Utils.today());
+            query.setParameter("curDate", Utility.today());
 
             login = (Login) query.uniqueResult();
 

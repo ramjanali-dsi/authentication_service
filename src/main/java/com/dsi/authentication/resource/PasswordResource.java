@@ -2,14 +2,13 @@ package com.dsi.authentication.resource;
 
 import com.dsi.authentication.model.Login;
 import com.dsi.authentication.service.LoginService;
-import com.dsi.authentication.service.UserSessionService;
+import com.dsi.authentication.service.TokenService;
 import com.dsi.authentication.service.impl.EmailProvider;
 import com.dsi.authentication.service.impl.LoginServiceImpl;
 import com.dsi.authentication.service.impl.TokenServiceImpl;
-import com.dsi.authentication.service.impl.UserSessionServiceImpl;
 import com.dsi.authentication.util.Constants;
-import com.dsi.authentication.util.PasswordSaltUtil;
-import com.dsi.authentication.util.Utils;
+import com.dsi.authentication.util.PasswordHash;
+import com.dsi.authentication.util.Utility;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
@@ -37,7 +36,7 @@ public class PasswordResource {
 
     private static final Logger logger = Logger.getLogger(PasswordResource.class);
 
-    private static final TokenServiceImpl tokenService = new TokenServiceImpl();
+    private static final TokenService tokenService = new TokenServiceImpl();
     private static final LoginService loginService = new LoginServiceImpl();
 
     @Context
@@ -57,17 +56,17 @@ public class PasswordResource {
             logger.info("Request Body: " + requestBody);
 
             requestObj = new JSONObject(requestBody);
-            String username = Utils.validation(requestObj, "username");
-            String resetUrl = Utils.validation(requestObj, "reset_url");
+            String username = Utility.validation(requestObj, "username");
+            String resetUrl = Utility.validation(requestObj, "reset_url");
 
-            if(!Utils.isNullOrEmpty(username) && !Utils.isNullOrEmpty(resetUrl)){
+            if(!Utility.isNullOrEmpty(username) && !Utility.isNullOrEmpty(resetUrl)){
                 Login login = loginService.getLoginInfo(null, username);
                 if(login != null){
-                    String token = Utils.generateRandomString();
+                    String token = Utility.generateRandomString();
 
                     login.setResetPasswordToken(token);
-                    login.setResetTokenExpireTime(DateUtils.addHours(Utils.today(), 1));
-                    login.setModifiedDate(Utils.today());
+                    login.setResetTokenExpireTime(DateUtils.addHours(Utility.today(), 1));
+                    login.setModifiedDate(Utility.today());
 
                     loginService.updateLoginInfo(login);
                     logger.info("Update login info successfully.");
@@ -75,7 +74,7 @@ public class PasswordResource {
                     EmailProvider.constructResetPasswordRequestToken(login.getEmail(), resetUrl + token);
                     logger.info("An email sent to the user for reset password.");
 
-                    responseObj.put("message", "Reset password request success");
+                    responseObj.put(Constants.MESSAGE, "Reset password request success");
                     return Response.ok().entity(responseObj.toString()).build();
                 }
             }
@@ -99,26 +98,26 @@ public class PasswordResource {
             logger.info("Request Body: " + requestBody);
 
             requestObj = new JSONObject(requestBody);
-            String newPassword = Utils.validation(requestObj, "new_password");
-            String confirmPassword = Utils.validation(requestObj, "confirm_password");
+            String newPassword = Utility.validation(requestObj, "new_password");
+            String confirmPassword = Utility.validation(requestObj, "confirm_password");
 
-            if(!Utils.isNullOrEmpty(newPassword) && !Utils.isNullOrEmpty(confirmPassword)
-                    && !Utils.isNullOrEmpty(resetToken)){
+            if(!Utility.isNullOrEmpty(newPassword) && !Utility.isNullOrEmpty(confirmPassword)
+                    && !Utility.isNullOrEmpty(resetToken)){
 
                 Login login = loginService.getLoginInfoByResetToken(resetToken);
                 if(login != null && newPassword.equals(confirmPassword)){
-                    String hashPassword = PasswordSaltUtil.hash(newPassword, login.getSalt());
+                    String hashPassword = PasswordHash.hash(newPassword, login.getSalt());
 
                     login.setResetPasswordToken(null);
                     login.setResetTokenExpireTime(null);
                     login.setPassword(hashPassword);
-                    login.setModifiedDate(Utils.today());
+                    login.setModifiedDate(Utility.today());
 
                     loginService.updateLoginInfo(login);
                     logger.info("Update login info successfully.");
 
                     logger.info("Password reset successfully.");
-                    responseObj.put("message", "Password reset success");
+                    responseObj.put(Constants.MESSAGE, "Password reset success");
                     return Response.ok().entity(responseObj.toString()).build();
                 }
             }
@@ -145,12 +144,12 @@ public class PasswordResource {
             logger.info("Request Body: " + requestBody);
 
             requestObj = new JSONObject(requestBody);
-            String oldPassword = Utils.validation(requestObj, "old_password");
-            String newPassword = Utils.validation(requestObj, "new_password");
-            String confirmPassword = Utils.validation(requestObj, "confirm_password");
+            String oldPassword = Utility.validation(requestObj, "old_password");
+            String newPassword = Utility.validation(requestObj, "new_password");
+            String confirmPassword = Utility.validation(requestObj, "confirm_password");
 
-            if(!Utils.isNullOrEmpty(oldPassword) && !Utils.isNullOrEmpty(newPassword)
-                    && !Utils.isNullOrEmpty(confirmPassword) && !Utils.isNullOrEmpty(accessToken)){
+            if(!Utility.isNullOrEmpty(oldPassword) && !Utility.isNullOrEmpty(newPassword)
+                    && !Utility.isNullOrEmpty(confirmPassword) && !Utility.isNullOrEmpty(accessToken)){
 
                 Claims parseToken = tokenService.parseToken(accessToken);
                 if(parseToken != null) {
@@ -158,16 +157,16 @@ public class PasswordResource {
                     Login login = loginService.getLoginInfo(parseToken.getId(), null);
                     if(login != null && newPassword.equals(confirmPassword)){
 
-                        String hashPassword = PasswordSaltUtil.hash(oldPassword, login.getSalt());
+                        String hashPassword = PasswordHash.hash(oldPassword, login.getSalt());
                         if(hashPassword.equals(login.getPassword())){
 
-                            String newHashPassword = PasswordSaltUtil.hash(newPassword, login.getSalt());
+                            String newHashPassword = PasswordHash.hash(newPassword, login.getSalt());
                             login.setPassword(newHashPassword);
-                            login.setModifiedDate(Utils.today());
+                            login.setModifiedDate(Utility.today());
                             loginService.updateLoginInfo(login);
                             logger.info("Update login info successfully.");
 
-                            responseObj.put("message", "Password change success");
+                            responseObj.put(Constants.MESSAGE, "Password change success");
                             return Response.ok().entity(responseObj.toString()).build();
                         }
                     }

@@ -1,7 +1,7 @@
 package com.dsi.authentication.filter;
 
 import com.dsi.authentication.util.Constants;
-import com.dsi.authentication.util.Utils;
+import com.dsi.authentication.util.Utility;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +30,7 @@ public class AccessTokenFilter implements ContainerRequestFilter {
 
         if(header != null) {
             logger.info("Header: " + header);
-            String accessToken = Utils.getFinalToken(header);
+            String accessToken = Utility.getFinalToken(header);
 
             logger.info("Access Token: " + accessToken);
             request.setAttribute("access_token", accessToken);

@@ -6,7 +6,7 @@ import com.dsi.authentication.model.UserSession;
 import com.dsi.authentication.service.*;
 import com.dsi.authentication.service.impl.*;
 import com.dsi.authentication.util.Constants;
-import com.dsi.authentication.util.Utils;
+import com.dsi.authentication.util.Utility;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
@@ -18,7 +18,6 @@ import org.codehaus.jettison.json.JSONObject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -37,7 +36,7 @@ public class LoginResource {
     private static final UserSessionService userSessionService = new UserSessionServiceImpl();
     private static final TenantService tenantService = new TenantServiceImpl();
     private static final LoginFactory loginFactory = new LoginFactoryImpl();
-    private static final TokenServiceImpl tokenService = new TokenServiceImpl();
+    private static final TokenService tokenService = new TokenServiceImpl();
 
     @Context
     HttpServletRequest request;
@@ -48,19 +47,20 @@ public class LoginResource {
             @ApiResponse(code = 200, message = "Login success"),
             @ApiResponse(code = 500, message = "Login failed, unauthorized.")
     })
-    public Response startLoginSession(String requestBody){
+    public Response startLoginSession(String requestBody) {
         JSONObject responseObj = new JSONObject();
         JSONObject requestObj;
+
         try {
             logger.info("Request Body: " + requestBody);
 
             requestObj = new JSONObject(requestBody);
-            String username = Utils.validation(requestObj, "username");
-            String password = Utils.validation(requestObj, "password");
-            String tenantID = Utils.validation(requestObj, "tenant_id");
+            String username = Utility.validation(requestObj, "username");
+            String password = Utility.validation(requestObj, "password");
+            String tenantID = Utility.validation(requestObj, "tenant_id");
 
-            if(!Utils.isNullOrEmpty(username) && !Utils.isNullOrEmpty(password)
-                    && !Utils.isNullOrEmpty(tenantID)){
+            if(!Utility.isNullOrEmpty(username) && !Utility.isNullOrEmpty(password)
+                    && !Utility.isNullOrEmpty(tenantID)){
 
                 Tenant tenant = tenantService.getTenantByID(tenantID);
                 if(tenant != null){
@@ -92,8 +92,8 @@ public class LoginResource {
                             userSession.setCreateBy(login.getUserId());
                             userSession.setModifiedBy(login.getUserId());
                             userSession.setAccessToken(accessToken);
-                            userSession.setCreatedDate(Utils.today());
-                            userSession.setModifiedDate(Utils.today());
+                            userSession.setCreatedDate(Utility.today());
+                            userSession.setModifiedDate(Utility.today());
                             userSession.setVersion(1);
                             userSessionService.saveUserSession(userSession);
                             logger.info("User session save successfully.");
@@ -103,9 +103,9 @@ public class LoginResource {
                     }
                 }
             }
-
         } catch (Exception e){
             logger.error("Failed to start login session:: " + e.getMessage());
+
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseObj.toString()).build();
     }
@@ -121,8 +121,9 @@ public class LoginResource {
                 request.getAttribute("access_token").toString() : null;
 
         JSONObject responseObj = new JSONObject();
+
         try {
-            if (!Utils.isNullOrEmpty(accessToken)) {
+            if (!Utility.isNullOrEmpty(accessToken)) {
 
                 Claims parseToken = tokenService.parseToken(accessToken);
                 if(parseToken != null){
@@ -132,7 +133,7 @@ public class LoginResource {
                         userSessionService.deleteUserSession(userSession);
                         logger.info("Delete user session successfully.");
 
-                        responseObj.put("message", "Delete user session success");
+                        responseObj.put(Constants.MESSAGE, "Delete user session success");
                         return Response.ok().entity(responseObj.toString()).build();
                     }
                 }
@@ -154,8 +155,9 @@ public class LoginResource {
                 request.getAttribute("access_token").toString() : null;
 
         JSONObject responseObj = new JSONObject();
+
         try {
-            if (!Utils.isNullOrEmpty(accessToken)) {
+            if (!Utility.isNullOrEmpty(accessToken)) {
 
                 Claims parseToken = tokenService.parseToken(accessToken);
                 if (parseToken != null) {

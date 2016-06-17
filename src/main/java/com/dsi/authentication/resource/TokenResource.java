@@ -1,15 +1,12 @@
 package com.dsi.authentication.resource;
 
 import com.dsi.authentication.model.UserSession;
-import com.dsi.authentication.service.LoginFactory;
-import com.dsi.authentication.service.TenantService;
+import com.dsi.authentication.service.TokenService;
 import com.dsi.authentication.service.UserSessionService;
-import com.dsi.authentication.service.impl.LoginFactoryImpl;
-import com.dsi.authentication.service.impl.TenantServiceImpl;
 import com.dsi.authentication.service.impl.TokenServiceImpl;
 import com.dsi.authentication.service.impl.UserSessionServiceImpl;
 import com.dsi.authentication.util.Constants;
-import com.dsi.authentication.util.Utils;
+import com.dsi.authentication.util.Utility;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
@@ -24,7 +21,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -41,7 +37,7 @@ public class TokenResource {
     private static final Logger logger = Logger.getLogger(TokenResource.class);
 
     private static final UserSessionService userSessionService = new UserSessionServiceImpl();
-    private static final TokenServiceImpl tokenService = new TokenServiceImpl();
+    private static final TokenService tokenService = new TokenServiceImpl();
 
     @Context
     HttpServletRequest request;
@@ -58,7 +54,7 @@ public class TokenResource {
 
         JSONObject responseObj = new JSONObject();
         try{
-            if (!Utils.isNullOrEmpty(accessToken)) {
+            if (!Utility.isNullOrEmpty(accessToken)) {
 
                 Claims parseToken = tokenService.parseToken(accessToken);
                 if (parseToken != null) {
@@ -72,7 +68,7 @@ public class TokenResource {
                         responseObj.put("access_token", newAccessToken);
 
                         userSession.setAccessToken(newAccessToken);
-                        userSession.setModifiedDate(Utils.today());
+                        userSession.setModifiedDate(Utility.today());
                         userSession.setModifiedBy(parseToken.getId());
                         userSessionService.updateUserSession(userSession);
                         logger.info("User session updated successfully.");

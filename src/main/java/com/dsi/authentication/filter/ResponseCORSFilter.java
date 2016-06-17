@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * Created by sabbir on 6/16/16.
  */
-public class ResponseCorFilter implements ContainerResponseFilter {
+public class ResponseCORSFilter implements ContainerResponseFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {

@@ -1,7 +1,7 @@
 package com.dsi.authentication.util;
 
 import com.dsi.authentication.filter.AccessTokenFilter;
-import com.dsi.authentication.filter.ResponseCorFilter;
+import com.dsi.authentication.filter.ResponseCORSFilter;
 import com.dsi.authentication.resource.LoginResource;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -12,7 +12,9 @@ public class AuthenticateService extends ResourceConfig {
 
     public AuthenticateService(){
         packages(LoginResource.class.getPackage().getName());
-        register(ResponseCorFilter.class);
+        register(ResponseCORSFilter.class);
         register(AccessTokenFilter.class);
+
+        SessionUtil.getSession();
     }
 }

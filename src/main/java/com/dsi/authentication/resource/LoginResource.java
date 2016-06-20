@@ -1,5 +1,8 @@
 package com.dsi.authentication.resource;
 
+import com.dsi.authentication.exception.CustomException;
+import com.dsi.authentication.exception.ErrorContext;
+import com.dsi.authentication.exception.ErrorMessage;
 import com.dsi.authentication.model.Login;
 import com.dsi.authentication.model.Tenant;
 import com.dsi.authentication.model.UserSession;
@@ -47,11 +50,12 @@ public class LoginResource {
             @ApiResponse(code = 200, message = "Login success"),
             @ApiResponse(code = 500, message = "Login failed, unauthorized.")
     })
-    public Response startLoginSession(String requestBody) {
+    public Response startLoginSession(String requestBody) throws Exception {
         JSONObject responseObj = new JSONObject();
         JSONObject requestObj;
 
-        try {
+        ErrorContext errorContext;
+        //try {
             logger.info("Request Body: " + requestBody);
 
             requestObj = new JSONObject(requestBody);
@@ -99,15 +103,34 @@ public class LoginResource {
                             logger.info("User session save successfully.");
 
                             return Response.ok().entity(responseObj.toString()).build();
+
+                        } else {
+                            logger.error("Login failed.");
+                            errorContext = new ErrorContext(null, null, Constants.AUTHENTICATE_SERVICE_0001_DESCRIPTION);
+                            ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0001, Constants.AUTHENTICATE_SERVICE_0001_DESCRIPTION, errorContext);
+                            throw new CustomException(errorMessage);
                         }
+                    } else {
+                        logger.error("Handler class not defined.");
+                        errorContext = new ErrorContext(tenantID, "Tenant", "Handler class name not found of this tenantID: " + tenantID);
+                        ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0002, Constants.AUTHENTICATE_SERVICE_0002_DESCRIPTION, errorContext);
+                        throw new CustomException(errorMessage);
                     }
+                } else {
+                    logger.error("Tenant not found.");
+                    errorContext = new ErrorContext(tenantID, "Tenant", "Tenant ID: " + tenantID + " not found.");
+                    ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0003, Constants.AUTHENTICATE_SERVICE_0003_DESCRIPTION, errorContext);
+                    throw new CustomException(errorMessage);
                 }
             }
-        } catch (Exception e){
+        /*} catch (Exception e){
             logger.error("Failed to start login session:: " + e.getMessage());
-
-        }
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseObj.toString()).build();
+            errorContext = new ErrorContext(null, null, e.getMessage());
+        }*/
+        errorContext = new ErrorContext(null, null, "Exception occurs.");
+        ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0005, Constants.AUTHENTICATE_SERVICE_0005_DESCRIPTION, errorContext);
+        throw new CustomException(errorMessage);
+        //return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseObj.toString()).build();
     }
 
     @DELETE
@@ -116,13 +139,14 @@ public class LoginResource {
             @ApiResponse(code = 200, message = "Logout success"),
             @ApiResponse(code = 500, message = "Logout failed, unauthorized.")
     })
-    public Response deleteLoginSession(){
+    public Response deleteLoginSession() throws Exception {
         String accessToken = request.getAttribute("access_token") != null ?
                 request.getAttribute("access_token").toString() : null;
 
         JSONObject responseObj = new JSONObject();
 
-        try {
+        ErrorContext errorContext;
+        //try {
             if (!Utility.isNullOrEmpty(accessToken)) {
 
                 Claims parseToken = tokenService.parseToken(accessToken);
@@ -135,13 +159,27 @@ public class LoginResource {
 
                         responseObj.put(Constants.MESSAGE, "Delete user session success");
                         return Response.ok().entity(responseObj.toString()).build();
+
+                    } else {
+                        logger.error("User session not found.");
+                        errorContext = new ErrorContext(null, null, Constants.AUTHENTICATE_SERVICE_0006_DESCRIPTION);
+                        ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0006, Constants.AUTHENTICATE_SERVICE_0006_DESCRIPTION, errorContext);
+                        throw new CustomException(errorMessage);
                     }
+                } else {
+                    logger.error("Token parse failed.");
+                    errorContext = new ErrorContext(null, null, "Token parse failed.");
+                    ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0007, Constants.AUTHENTICATE_SERVICE_0007_DESCRIPTION, errorContext);
+                    throw new CustomException(errorMessage);
                 }
             }
-        } catch (Exception e){
+        /*} catch (Exception e){
             logger.error("Failed to delete login session:: " + e.getMessage());
-        }
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseObj.toString()).build();
+        }*/
+        errorContext = new ErrorContext(null, null, "Exception occurs.");
+        ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0005, Constants.AUTHENTICATE_SERVICE_0005_DESCRIPTION, errorContext);
+        throw new CustomException(errorMessage);
+        //return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseObj.toString()).build();
     }
 
     @GET
@@ -150,13 +188,14 @@ public class LoginResource {
             @ApiResponse(code = 200, message = "Get login info"),
             @ApiResponse(code = 500, message = "Get login info failed, unauthorized.")
     })
-    public Response getLoginSession(){
+    public Response getLoginSession() throws Exception {
         String accessToken = request.getAttribute("access_token") != null ?
                 request.getAttribute("access_token").toString() : null;
 
         JSONObject responseObj = new JSONObject();
 
-        try {
+        ErrorContext errorContext;
+        //try {
             if (!Utility.isNullOrEmpty(accessToken)) {
 
                 Claims parseToken = tokenService.parseToken(accessToken);
@@ -171,12 +210,26 @@ public class LoginResource {
                         responseObj = new JSONObject(subject);
                         logger.info("Login into: " + responseObj.toString());
                         return Response.ok().entity(responseObj.toString()).build();
+
+                    } else {
+                        logger.error("User session not found.");
+                        errorContext = new ErrorContext(null, null, Constants.AUTHENTICATE_SERVICE_0006_DESCRIPTION);
+                        ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0006, Constants.AUTHENTICATE_SERVICE_0006_DESCRIPTION, errorContext);
+                        throw new CustomException(errorMessage);
                     }
+                } else {
+                    logger.error("Token parse failed.");
+                    errorContext = new ErrorContext(null, null, "Token parse failed.");
+                    ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0007, Constants.AUTHENTICATE_SERVICE_0007_DESCRIPTION, errorContext);
+                    throw new CustomException(errorMessage);
                 }
             }
-        } catch (Exception e){
+        /*} catch (Exception e){
             logger.error("Failed to get login info: " + e.getMessage());
-        }
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseObj.toString()).build();
+        }*/
+        errorContext = new ErrorContext(null, null, "Exception occurs.");
+        ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0005, Constants.AUTHENTICATE_SERVICE_0005_DESCRIPTION, errorContext);
+        throw new CustomException(errorMessage);
+        //return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseObj.toString()).build();
     }
 }

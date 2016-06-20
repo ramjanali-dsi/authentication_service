@@ -19,7 +19,7 @@
         </init-param>
         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>
-            <param-value>com.dsi.authentication.util</param-value>
+            <param-value>com.dsi.authentication</param-value>
         </init-param>
         <init-param>
             <param-name>jersey.config.server.provider.classnames</param-name>

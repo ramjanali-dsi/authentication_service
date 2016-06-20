@@ -1,5 +1,8 @@
 package com.dsi.authentication.util;
 
+import com.dsi.authentication.exception.CustomException;
+import com.dsi.authentication.exception.ErrorContext;
+import com.dsi.authentication.exception.ErrorMessage;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -39,11 +42,21 @@ public class Utility {
         return new Date();
     }
 
-    public static final String validation(JSONObject requestObj, String str) throws Exception{
-        if(requestObj.has(str))
-            return requestObj.getString(str);
+    public static final String validation(JSONObject requestObj, String str) throws CustomException {
 
-        return null;
+        ErrorContext errorContext;
+        try {
+            if (requestObj.has(str)) {
+                return requestObj.getString(str);
+
+            } else {
+                errorContext = new ErrorContext(null, null, "Params are missing.");
+            }
+        } catch (Exception e){
+            errorContext = new ErrorContext(null, null, e.getMessage());
+        }
+        ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0004, Constants.AUTHENTICATE_SERVICE_0004_DESCRIPTION, errorContext);
+        throw new CustomException(errorMessage);
     }
 
     public static final String getFinalToken(String header) {

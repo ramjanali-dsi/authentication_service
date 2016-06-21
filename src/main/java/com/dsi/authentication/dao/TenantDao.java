@@ -7,9 +7,9 @@ import com.dsi.authentication.model.Tenant;
  */
 public interface TenantDao {
 
-    void saveTenant(Tenant tenant);
+    boolean saveTenant(Tenant tenant);
 
-    void updateTenant(Tenant tenant);
+    boolean updateTenant(Tenant tenant);
 
     Tenant getTenantByID(String tenantID);
 }

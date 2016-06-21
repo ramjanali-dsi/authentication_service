@@ -1,5 +1,6 @@
 package com.dsi.authentication.service;
 
+import com.dsi.authentication.exception.CustomException;
 import io.jsonwebtoken.Claims;
 
 /**
@@ -9,5 +10,5 @@ public interface TokenService {
 
     String createToken(String id, String issuer, String subject, long time);
 
-    public Claims parseToken(String accessToken);
+    Claims parseToken(String accessToken) throws CustomException;
 }

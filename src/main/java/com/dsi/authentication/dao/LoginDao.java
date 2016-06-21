@@ -7,7 +7,7 @@ import com.dsi.authentication.model.Login;
  */
 public interface LoginDao {
 
-    void updateLoginInfo(Login login);
+    boolean updateLoginInfo(Login login);
 
     Login getLoginInfo(String userID, String email);
 

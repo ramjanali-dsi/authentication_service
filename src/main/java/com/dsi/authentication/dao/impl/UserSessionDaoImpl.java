@@ -1,7 +1,11 @@
 package com.dsi.authentication.dao.impl;
 
 import com.dsi.authentication.dao.UserSessionDao;
+import com.dsi.authentication.exception.CustomException;
+import com.dsi.authentication.exception.ErrorContext;
+import com.dsi.authentication.exception.ErrorMessage;
 import com.dsi.authentication.model.UserSession;
+import com.dsi.authentication.util.Constants;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -14,18 +18,18 @@ public class UserSessionDaoImpl extends BaseDao implements UserSessionDao {
     private static final Logger logger = Logger.getLogger(UserSessionDaoImpl.class);
 
     @Override
-    public void saveUserSession(UserSession userSession) {
-        save(userSession);
+    public boolean saveUserSession(UserSession userSession) {
+        return save(userSession);
     }
 
     @Override
-    public void updateUserSession(UserSession userSession) {
-        update(userSession);
+    public boolean updateUserSession(UserSession userSession) {
+        return update(userSession);
     }
 
     @Override
-    public void deleteUserSession(UserSession userSession) {
-        delete(userSession);
+    public boolean deleteUserSession(UserSession userSession) {
+        return delete(userSession);
     }
 
     @Override
@@ -42,6 +46,7 @@ public class UserSessionDaoImpl extends BaseDao implements UserSessionDao {
 
         }catch (Exception e){
             logger.error("Database error occurs when get: " + e.getMessage());
+
         } finally {
             if(session != null) {
                 close(session);

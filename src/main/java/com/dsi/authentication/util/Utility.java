@@ -50,12 +50,13 @@ public class Utility {
                 return requestObj.getString(str);
 
             } else {
-                errorContext = new ErrorContext(null, null, "Params are missing.");
+                errorContext = new ErrorContext(str, null, "Params: '"+ str +"' are missing.");
             }
         } catch (Exception e){
-            errorContext = new ErrorContext(null, null, e.getMessage());
+            errorContext = new ErrorContext(str, null, e.getMessage());
         }
-        ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0004, Constants.AUTHENTICATE_SERVICE_0004_DESCRIPTION, errorContext);
+        ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0008,
+                Constants.AUTHENTICATE_SERVICE_0008_DESCRIPTION, errorContext);
         throw new CustomException(errorMessage);
     }
 

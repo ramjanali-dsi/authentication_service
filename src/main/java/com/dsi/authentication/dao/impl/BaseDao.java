@@ -22,48 +22,60 @@ public class BaseDao {
         session.close();
     }
 
-    public void save(Object object){
+    public boolean save(Object object) {
         Session session = null;
+        boolean success = true;
         try {
             session = getSession();
             session.save(object);
 
         } catch (Exception e) {
             logger.error("Database error occurs when save: " + e.getMessage());
+            success = false;
+
         } finally {
             if(session != null) {
                 close(session);
             }
         }
+        return success;
     }
 
-    public void update(Object object){
+    public boolean update(Object object) {
         Session session = null;
+        boolean success = true;
         try {
             session = getSession();
             session.update(object);
 
         } catch (Exception e) {
             logger.error("Database error occurs when update: " + e.getMessage());
+            success = false;
+
         } finally {
             if(session != null) {
                 close(session);
             }
         }
+        return success;
     }
 
-    public void delete(Object object){
+    public boolean delete(Object object) {
         Session session = null;
+        boolean success = true;
         try {
             session = getSession();
             session.delete(object);
 
         } catch (Exception e) {
             logger.error("Database error occurs when delete: " + e.getMessage());
+            success = false;
+
         } finally {
             if(session != null) {
                 close(session);
             }
         }
+        return success;
     }
 }

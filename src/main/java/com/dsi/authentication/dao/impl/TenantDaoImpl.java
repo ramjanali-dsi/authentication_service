@@ -15,13 +15,13 @@ public class TenantDaoImpl extends BaseDao implements TenantDao {
     private static final Logger logger = Logger.getLogger(TenantDaoImpl.class);
 
     @Override
-    public void saveTenant(Tenant tenant) {
-        save(tenant);
+    public boolean saveTenant(Tenant tenant) {
+        return save(tenant);
     }
 
     @Override
-    public void updateTenant(Tenant tenant) {
-        update(tenant);
+    public boolean updateTenant(Tenant tenant) {
+        return update(tenant);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.dsi.authentication.service;
 
+import com.dsi.authentication.exception.CustomException;
 import com.dsi.authentication.model.UserSession;
 
 import java.util.List;
@@ -9,11 +10,11 @@ import java.util.List;
  */
 public interface UserSessionService {
 
-    void saveUserSession(UserSession userSession);
+    void saveUserSession(UserSession userSession) throws CustomException;
 
-    void updateUserSession(UserSession userSession);
+    void updateUserSession(UserSession userSession) throws CustomException;
 
-    void deleteUserSession(UserSession userSession);
+    void deleteUserSession(UserSession userSession) throws CustomException;
 
-    UserSession getUserSessionByUserIdAndAccessToken(String userID, String accessToken);
+    UserSession getUserSessionByUserIdAndAccessToken(String userID, String accessToken) throws CustomException;
 }

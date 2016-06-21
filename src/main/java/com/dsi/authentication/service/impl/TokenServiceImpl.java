@@ -1,5 +1,8 @@
 package com.dsi.authentication.service.impl;
 
+import com.dsi.authentication.exception.CustomException;
+import com.dsi.authentication.exception.ErrorContext;
+import com.dsi.authentication.exception.ErrorMessage;
 import com.dsi.authentication.service.TokenService;
 import com.dsi.authentication.util.Constants;
 import com.dsi.authentication.util.Utility;
@@ -47,16 +50,18 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public Claims parseToken(String accessToken) {
-        Claims claims = null;
+    public Claims parseToken(String accessToken) throws CustomException {
         try {
-            claims = Jwts.parser()
+            return Jwts.parser()
                     .setSigningKey(DatatypeConverter.parseBase64Binary(Utility.getTokenSecretKey(Constants.SECRET_KEY)))
                     .parseClaimsJws(accessToken).getBody();
 
         } catch (Exception e){
             logger.error("Failed to parse token: " + e.getMessage());
+            ErrorContext errorContext = new ErrorContext(null, null, "Token parse failed.");
+            ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0007,
+                    Constants.AUTHENTICATE_SERVICE_0007_DESCRIPTION, errorContext);
+            throw new CustomException(errorMessage);
         }
-        return claims;
     }
 }

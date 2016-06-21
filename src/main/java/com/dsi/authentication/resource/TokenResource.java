@@ -1,5 +1,8 @@
 package com.dsi.authentication.resource;
 
+import com.dsi.authentication.exception.CustomException;
+import com.dsi.authentication.exception.ErrorContext;
+import com.dsi.authentication.exception.ErrorMessage;
 import com.dsi.authentication.model.UserSession;
 import com.dsi.authentication.service.TokenService;
 import com.dsi.authentication.service.UserSessionService;
@@ -13,6 +16,7 @@ import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 import io.jsonwebtoken.Claims;
 import org.apache.log4j.Logger;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,38 +52,38 @@ public class TokenResource {
             @ApiResponse(code = 200, message = "Reset token success"),
             @ApiResponse(code = 500, message = "Reset token failed, unauthorized.")
     })
-    public Response resetAccessToken(){
+    public Response resetAccessToken() throws Exception {
         String accessToken = request.getAttribute("access_token") != null ?
                 request.getAttribute("access_token").toString() : null;
 
         JSONObject responseObj = new JSONObject();
-        try{
-            if (!Utility.isNullOrEmpty(accessToken)) {
 
-                Claims parseToken = tokenService.parseToken(accessToken);
-                if (parseToken != null) {
+        try {
+            Claims parseToken = tokenService.parseToken(accessToken);
 
-                    UserSession userSession = userSessionService.getUserSessionByUserIdAndAccessToken(parseToken.getId(), accessToken);
-                    if(userSession != null){
-                        String newAccessToken = tokenService.createToken(parseToken.getId(), parseToken.getIssuer(),
-                                parseToken.getSubject(), Constants.TIME_INTERVAL);
+            UserSession userSession = userSessionService.
+                    getUserSessionByUserIdAndAccessToken(parseToken.getId(), accessToken);
 
-                        logger.info("Generate Access Token: " + newAccessToken);
-                        responseObj.put("access_token", newAccessToken);
+            String newAccessToken = tokenService.createToken(parseToken.getId(), parseToken.getIssuer(),
+                    parseToken.getSubject(), Constants.TIME_INTERVAL);
 
-                        userSession.setAccessToken(newAccessToken);
-                        userSession.setModifiedDate(Utility.today());
-                        userSession.setModifiedBy(parseToken.getId());
-                        userSessionService.updateUserSession(userSession);
-                        logger.info("User session updated successfully.");
+            logger.info("Generate New Access Token: " + newAccessToken);
+            responseObj.put("access_token", newAccessToken);
 
-                        return Response.ok().entity(responseObj.toString()).build();
-                    }
-                }
-            }
-        } catch (Exception e){
-            logger.error("Failed to reset access token: " + e.getMessage());
+            userSession.setAccessToken(newAccessToken);
+            userSession.setModifiedDate(Utility.today());
+            userSession.setModifiedBy(parseToken.getId());
+
+            userSessionService.updateUserSession(userSession);
+            logger.info("User session updated successfully.");
+
+            return Response.ok().entity(responseObj.toString()).build();
+
+        } catch (JSONException je){
+            ErrorContext errorContext = new ErrorContext(null, null, je.getMessage());
+            ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0009,
+                    Constants.AUTHENTICATE_SERVICE_0009_DESCRIPTION, errorContext);
+            throw new CustomException(errorMessage);
         }
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseObj.toString()).build();
     }
 }

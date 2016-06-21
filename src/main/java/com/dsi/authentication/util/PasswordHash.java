@@ -1,5 +1,9 @@
 package com.dsi.authentication.util;
 
+import com.dsi.authentication.exception.CustomException;
+import com.dsi.authentication.exception.ErrorContext;
+import com.dsi.authentication.exception.ErrorMessage;
+
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -14,19 +18,24 @@ public class PasswordHash {
     private static final int iterations = 1000;
     private static final int desiredKeyLen = 64 * 8;
 
-    public static String hash(String password, String salts) throws Exception {
-        if (Utility.isNullOrEmpty(password))
-            throw new IllegalArgumentException("Empty passwords are not supported.");
+    public static String hash(String password, String salts) throws CustomException {
+        try {
+            byte[] salt = salts.getBytes();
 
-        byte[] salt = salts.getBytes();
+            SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            SecretKey key = f.generateSecret(new PBEKeySpec(
+                    password.toCharArray(), salt, iterations, desiredKeyLen)
+            );
 
-        SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-        SecretKey key = f.generateSecret(new PBEKeySpec(
-                password.toCharArray(), salt, iterations, desiredKeyLen)
-        );
+            byte[] hash = key.getEncoded();
+            return iterations + ":" + toHex(hash);
 
-        byte[] hash = key.getEncoded();
-        return iterations + ":" + toHex(hash);
+        } catch (Exception e){
+            ErrorContext errorContext = new ErrorContext(null, null, e.getMessage());
+            ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0011,
+                    Constants.AUTHENTICATE_SERVICE_0011_DESCRIPTION, errorContext);
+            throw new CustomException(errorMessage);
+        }
     }
 
     private static String toHex(byte[] array) throws NoSuchAlgorithmException

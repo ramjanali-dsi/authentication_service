@@ -1,5 +1,6 @@
 package com.dsi.authentication.service;
 
+import com.dsi.authentication.exception.CustomException;
 import com.dsi.authentication.model.Tenant;
 
 /**
@@ -7,9 +8,9 @@ import com.dsi.authentication.model.Tenant;
  */
 public interface TenantService {
 
-    void saveTenant(Tenant tenant);
+    void saveTenant(Tenant tenant) throws CustomException;
 
-    void updateTenant(Tenant tenant);
+    void updateTenant(Tenant tenant) throws CustomException;
 
-    Tenant getTenantByID(String tenantID);
+    Tenant getTenantByID(String tenantID) throws CustomException;
 }

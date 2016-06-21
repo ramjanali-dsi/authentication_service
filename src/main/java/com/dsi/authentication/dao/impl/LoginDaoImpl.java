@@ -15,8 +15,8 @@ public class LoginDaoImpl extends BaseDao implements LoginDao {
     private static final Logger logger = Logger.getLogger(LoginDaoImpl.class);
 
     @Override
-    public void updateLoginInfo(Login login) {
-        update(login);
+    public boolean updateLoginInfo(Login login) {
+        return update(login);
     }
 
     @Override

@@ -7,11 +7,11 @@ import com.dsi.authentication.model.UserSession;
  */
 public interface UserSessionDao {
 
-    void saveUserSession(UserSession userSession);
+    boolean saveUserSession(UserSession userSession);
 
-    void updateUserSession(UserSession userSession);
+    boolean updateUserSession(UserSession userSession);
 
-    void deleteUserSession(UserSession userSession);
+    boolean deleteUserSession(UserSession userSession);
 
     UserSession getUserSessionByUserIdAndAccessToken(String userID, String accessToken);
 }

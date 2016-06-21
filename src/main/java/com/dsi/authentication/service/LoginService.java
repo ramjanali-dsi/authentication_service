@@ -1,5 +1,6 @@
 package com.dsi.authentication.service;
 
+import com.dsi.authentication.exception.CustomException;
 import com.dsi.authentication.model.Login;
 
 /**
@@ -7,9 +8,9 @@ import com.dsi.authentication.model.Login;
  */
 public interface LoginService {
 
-    void updateLoginInfo(Login login);
+    void updateLoginInfo(Login login) throws CustomException;
 
-    Login getLoginInfo(String userID, String email);
+    Login getLoginInfo(String userID, String email) throws CustomException;
 
-    Login getLoginInfoByResetToken(String resetToken);
+    Login getLoginInfoByResetToken(String resetToken) throws CustomException;
 }

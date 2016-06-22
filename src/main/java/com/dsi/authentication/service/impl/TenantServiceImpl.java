@@ -31,7 +31,7 @@ public class TenantServiceImpl implements TenantService {
 
     private void validateInputForCreation(Tenant tenant) throws CustomException {
         if(tenant.getAuthHandler() == null){
-            ErrorContext errorContext = new ErrorContext(tenant.getAuthHandler().getAuthHandlerId(), "Tenant",
+            ErrorContext errorContext = new ErrorContext("AuthHandlerID", "Tenant",
                     "Auth handler not defined.");
             ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0001,
                     Constants.AUTHENTICATE_SERVICE_0001_DESCRIPTION, errorContext);

@@ -31,13 +31,13 @@ public class UserSessionServiceImpl implements UserSessionService {
 
     private void validateInputForCreation(UserSession userSession) throws CustomException {
         if(userSession.getAccessToken() == null){
-            ErrorContext errorContext = new ErrorContext(userSession.getAccessToken(), "UserSession", "AccessToken not defined.");
+            ErrorContext errorContext = new ErrorContext("AccessToken", "UserSession", "AccessToken not defined.");
             ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0001,
                     Constants.AUTHENTICATE_SERVICE_0001_DESCRIPTION, errorContext);
             throw new CustomException(errorMessage);
         }
         if(userSession.getUserId() == null){
-            ErrorContext errorContext = new ErrorContext(userSession.getUserId(), "UserSession", "UserID not defined.");
+            ErrorContext errorContext = new ErrorContext("UserID", "UserSession", "UserID not defined.");
             ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0001,
                     Constants.AUTHENTICATE_SERVICE_0001_DESCRIPTION, errorContext);
             throw new CustomException(errorMessage);

@@ -8,7 +8,6 @@ import org.hibernate.service.ServiceRegistry;
 import org.reflections.Reflections;
 
 import javax.persistence.Entity;
-import javax.persistence.MappedSuperclass;
 
 /**
  * Created by sabbir on 6/10/16.
@@ -24,7 +23,7 @@ public class SessionUtil {
 
     private SessionUtil(){
         Configuration configuration = new Configuration();
-        configuration.configure("hibernate.cfg.xml");
+        configuration.configure("hibernate-authenticate.cfg.xml");
 
         final Reflections reflections = new Reflections("com.dsi.authentication.model");
 

@@ -2,7 +2,6 @@ package com.dsi.authentication.dao.impl;
 
 import com.dsi.authentication.dao.TenantDao;
 import com.dsi.authentication.model.Tenant;
-import com.dsi.authentication.util.SessionUtil;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;

@@ -90,7 +90,7 @@ public class PasswordResource {
     }
 
     @POST
-    @Path("/change/{reset_token}")
+    @Path("/reset/{reset_token}")
     @ApiOperation(value = "Change Password From Reset Request", notes = "Change Password From Reset Request", position = 6)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Change password from reset request success"),

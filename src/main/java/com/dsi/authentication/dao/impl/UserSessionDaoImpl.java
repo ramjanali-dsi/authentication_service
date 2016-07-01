@@ -1,11 +1,7 @@
 package com.dsi.authentication.dao.impl;
 
 import com.dsi.authentication.dao.UserSessionDao;
-import com.dsi.authentication.exception.CustomException;
-import com.dsi.authentication.exception.ErrorContext;
-import com.dsi.authentication.exception.ErrorMessage;
 import com.dsi.authentication.model.UserSession;
-import com.dsi.authentication.util.Constants;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;

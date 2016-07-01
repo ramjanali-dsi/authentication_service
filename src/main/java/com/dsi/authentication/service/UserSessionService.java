@@ -3,8 +3,6 @@ package com.dsi.authentication.service;
 import com.dsi.authentication.exception.CustomException;
 import com.dsi.authentication.model.UserSession;
 
-import java.util.List;
-
 /**
  * Created by sabbir on 6/15/16.
  */

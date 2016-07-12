@@ -5,10 +5,10 @@ import com.dsi.authentication.exception.ErrorContext;
 import com.dsi.authentication.exception.ErrorMessage;
 import com.dsi.authentication.model.Login;
 import com.dsi.authentication.model.Tenant;
-import com.dsi.authentication.model.UserSession;
 import com.dsi.authentication.service.*;
 import com.dsi.authentication.service.impl.*;
 import com.dsi.authentication.util.Constants;
+import com.dsi.authentication.util.HttpClient;
 import com.dsi.authentication.util.Utility;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -37,7 +37,6 @@ public class LoginResource {
 
     private static final Logger logger = Logger.getLogger(LoginResource.class);
 
-    private static final UserSessionService userSessionService = new UserSessionServiceImpl();
     private static final TenantService tenantService = new TenantServiceImpl();
     private static final LoginFactory loginFactory = new LoginFactoryImpl();
     private static final TokenService tokenService = new TokenServiceImpl();
@@ -86,17 +85,14 @@ public class LoginResource {
             logger.info("Generated AccessToken: " + accessToken);
             responseObj.put("access_token", accessToken);
 
-            UserSession userSession = new UserSession();
-            userSession.setUserId(login.getUserId());
-            userSession.setCreateBy(login.getUserId());
-            userSession.setModifiedBy(login.getUserId());
-            userSession.setAccessToken(accessToken);
-            userSession.setCreatedDate(Utility.today());
-            userSession.setModifiedDate(Utility.today());
-            userSession.setVersion(1);
+            JSONObject userSessionObj = new JSONObject();
+            userSessionObj.put("userId", login.getUserId());
+            userSessionObj.put("createBy", login.getUserId());
+            userSessionObj.put("modifiedBy", login.getUserId());
+            userSessionObj.put("accessToken", accessToken);
 
-            userSessionService.saveUserSession(userSession);
-            logger.info("User session save successfully.");
+            String result = HttpClient.sendPost(APIProvider.API_USER_SESSION, userSessionObj.toString());
+            logger.info("Another api call: " + result);
 
             return Response.ok().entity(responseObj.toString()).build();
 
@@ -123,11 +119,12 @@ public class LoginResource {
         try {
             Claims parseToken = tokenService.parseToken(accessToken);
 
-            UserSession userSession = userSessionService.
-                    getUserSessionByUserIdAndAccessToken(parseToken.getId(), accessToken);
+            JSONObject bodyObj = new JSONObject();
+            bodyObj.put("userId", parseToken.getId());
+            bodyObj.put("accessToken", accessToken);
 
-            userSessionService.deleteUserSession(userSession);
-            logger.info("Delete user session successfully.");
+            String result = HttpClient.sendDelete(APIProvider.API_USER_SESSION, bodyObj.toString());
+            logger.info("Another api call: " + result);
 
             responseObj.put(Constants.MESSAGE, "Delete user session success");
             return Response.ok().entity(responseObj.toString()).build();
@@ -155,7 +152,12 @@ public class LoginResource {
         try {
             Claims parseToken = tokenService.parseToken(accessToken);
 
-            userSessionService.getUserSessionByUserIdAndAccessToken(parseToken.getId(), accessToken);
+            JSONObject bodyObj = new JSONObject();
+            bodyObj.put("userId", parseToken.getId());
+            bodyObj.put("accessToken", accessToken);
+
+            String result = HttpClient.sendPost(APIProvider.API_USER_SESSION_VALID, bodyObj.toString());
+            logger.info("Another api call: " + result);
 
             String subject = parseToken.getSubject();
             logger.info("ParseToken Subject: " + subject);

@@ -11,7 +11,6 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "ref_auth_handler")
-@Data
 public class AuthHandler {
 
     @Id
@@ -27,4 +26,36 @@ public class AuthHandler {
     private String typeImpl;
 
     private int version;
+
+    public String getAuthHandlerId() {
+        return authHandlerId;
+    }
+
+    public void setAuthHandlerId(String authHandlerId) {
+        this.authHandlerId = authHandlerId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getTypeImpl() {
+        return typeImpl;
+    }
+
+    public void setTypeImpl(String typeImpl) {
+        this.typeImpl = typeImpl;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
 }

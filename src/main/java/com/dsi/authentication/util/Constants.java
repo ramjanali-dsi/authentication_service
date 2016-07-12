@@ -50,6 +50,9 @@ public class Constants {
     public static final String AUTHENTICATE_SERVICE_0011 = "authenticate_service_0011";
     public static final String AUTHENTICATE_SERVICE_0011_DESCRIPTION = "Password hash failed.";
 
+    public static final String AUTHENTICATE_SERVICE_0012 = "authenticate_service_0012";
+    public static final String AUTHENTICATE_SERVICE_0012_DESCRIPTION = "Error from another api call.";
+
 
     /*
     public static final String AUTHENTICATE_SERVICE_0049 = "authenticate_service_0049";

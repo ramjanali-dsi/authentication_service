@@ -19,13 +19,13 @@ public class EmailProvider {
 
     private static final Logger logger = Logger.getLogger(EmailProvider.class);
 
-    public static final String API_URLS_FILE = "Email.properties";
+    public static final String EMAIL_URLS_FILE = "Email.properties";
     private static final Properties emailProp= new Properties();
 
     static{
         try {
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            InputStream propIS = loader.getResourceAsStream(API_URLS_FILE);
+            InputStream propIS = loader.getResourceAsStream(EMAIL_URLS_FILE);
             emailProp.load(propIS);
            } catch (IOException e) {
             logger.error("An error occurred while loading urls.", e);

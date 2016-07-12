@@ -11,7 +11,6 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "dsi_tenant")
-@Data
 public class Tenant {
 
     @Id
@@ -37,4 +36,60 @@ public class Tenant {
     private AuthHandler authHandler;
 
     private int version;
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public AuthHandler getAuthHandler() {
+        return authHandler;
+    }
+
+    public void setAuthHandler(AuthHandler authHandler) {
+        this.authHandler = authHandler;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
 }

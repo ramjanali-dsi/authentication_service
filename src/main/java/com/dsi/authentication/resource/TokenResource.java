@@ -3,13 +3,11 @@ package com.dsi.authentication.resource;
 import com.dsi.authentication.exception.CustomException;
 import com.dsi.authentication.exception.ErrorContext;
 import com.dsi.authentication.exception.ErrorMessage;
-import com.dsi.authentication.model.UserSession;
 import com.dsi.authentication.service.TokenService;
-import com.dsi.authentication.service.UserSessionService;
+import com.dsi.authentication.service.impl.APIProvider;
 import com.dsi.authentication.service.impl.TokenServiceImpl;
-import com.dsi.authentication.service.impl.UserSessionServiceImpl;
 import com.dsi.authentication.util.Constants;
-import com.dsi.authentication.util.Utility;
+import com.dsi.authentication.util.HttpClient;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
@@ -40,7 +38,6 @@ public class TokenResource {
 
     private static final Logger logger = Logger.getLogger(TokenResource.class);
 
-    private static final UserSessionService userSessionService = new UserSessionServiceImpl();
     private static final TokenService tokenService = new TokenServiceImpl();
 
     @Context
@@ -61,21 +58,19 @@ public class TokenResource {
         try {
             Claims parseToken = tokenService.parseToken(accessToken);
 
-            UserSession userSession = userSessionService.
-                    getUserSessionByUserIdAndAccessToken(parseToken.getId(), accessToken);
-
             String newAccessToken = tokenService.createToken(parseToken.getId(), parseToken.getIssuer(),
                     parseToken.getSubject(), Constants.TIME_INTERVAL);
 
             logger.info("Generate New Access Token: " + newAccessToken);
             responseObj.put("access_token", newAccessToken);
 
-            userSession.setAccessToken(newAccessToken);
-            userSession.setModifiedDate(Utility.today());
-            userSession.setModifiedBy(parseToken.getId());
+            JSONObject bodyObj = new JSONObject();
+            bodyObj.put("userId", parseToken.getId());
+            bodyObj.put("accessToken", accessToken);
+            bodyObj.put("newAccessToken", newAccessToken);
 
-            userSessionService.updateUserSession(userSession);
-            logger.info("User session updated successfully.");
+            String result = HttpClient.sendPut(APIProvider.API_USER_SESSION, bodyObj.toString());
+            logger.info("Another api call: " + result);
 
             return Response.ok().entity(responseObj.toString()).build();
 

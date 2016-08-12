@@ -20,6 +20,7 @@ public class HttpClient {
         RequestBody body = RequestBody.create(JSON, jsonObject);
         Request request = new Request.Builder()
                 .url(url)
+                .header(Constants.SYSTEM, Constants.SYSTEM_ID)
                 .post(body)
                 .build();
         Response response;
@@ -42,6 +43,7 @@ public class HttpClient {
         RequestBody body = RequestBody.create(JSON, jsonObject);
         Request request = new Request.Builder()
                 .url(url)
+                .header(Constants.SYSTEM, Constants.SYSTEM_ID)
                 .put(body)
                 .build();
         Response response;
@@ -64,6 +66,7 @@ public class HttpClient {
         RequestBody body = RequestBody.create(JSON, jsonObject);
         Request request = new Request.Builder()
                 .url(url)
+                .header(Constants.SYSTEM, Constants.SYSTEM_ID)
                 .delete(body)
                 .build();
         Response response;

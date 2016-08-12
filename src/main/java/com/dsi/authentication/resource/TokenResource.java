@@ -70,7 +70,12 @@ public class TokenResource {
             bodyObj.put("newAccessToken", newAccessToken);
 
             String result = HttpClient.sendPut(APIProvider.API_USER_SESSION, bodyObj.toString());
-            logger.info("Another api call: " + result);
+            logger.info("v1/user_session api call result: " + result);
+
+            JSONObject anotherApiResultObj = new JSONObject(result);
+            if(!anotherApiResultObj.has(Constants.MESSAGE)){
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
+            }
 
             return Response.ok().entity(responseObj.toString()).build();
 

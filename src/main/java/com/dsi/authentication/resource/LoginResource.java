@@ -92,7 +92,12 @@ public class LoginResource {
             userSessionObj.put("accessToken", accessToken);
 
             String result = HttpClient.sendPost(APIProvider.API_USER_SESSION, userSessionObj.toString());
-            logger.info("Another api call: " + result);
+            logger.info("v1/user_session api call result: " + result);
+
+            JSONObject anotherApiResultObj = new JSONObject(result);
+            if(!anotherApiResultObj.has(Constants.MESSAGE)){
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
+            }
 
             return Response.ok().entity(responseObj.toString()).build();
 
@@ -124,7 +129,12 @@ public class LoginResource {
             bodyObj.put("accessToken", accessToken);
 
             String result = HttpClient.sendDelete(APIProvider.API_USER_SESSION, bodyObj.toString());
-            logger.info("Another api call: " + result);
+            logger.info("v1/user_session api call result: " + result);
+
+            JSONObject anotherApiResultObj = new JSONObject(result);
+            if(!anotherApiResultObj.has(Constants.MESSAGE)){
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
+            }
 
             responseObj.put(Constants.MESSAGE, "Delete user session success");
             return Response.ok().entity(responseObj.toString()).build();
@@ -157,7 +167,12 @@ public class LoginResource {
             bodyObj.put("accessToken", accessToken);
 
             String result = HttpClient.sendPost(APIProvider.API_USER_SESSION_VALID, bodyObj.toString());
-            logger.info("Another api call: " + result);
+            logger.info("v1/user_session/is_valid api call result: " + result);
+
+            JSONObject anotherApiResultObj = new JSONObject(result);
+            if(!anotherApiResultObj.has(Constants.MESSAGE)){
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
+            }
 
             String subject = parseToken.getSubject();
             logger.info("ParseToken Subject: " + subject);

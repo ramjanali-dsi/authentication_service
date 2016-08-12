@@ -33,7 +33,7 @@ import javax.ws.rs.core.Response;
 @Path("/v1/access_token")
 @Api(value = "/Authentication", description = "Operations about Authentication")
 @Produces({MediaType.APPLICATION_JSON})
-@Consumes({MediaType.WILDCARD})
+@Consumes({MediaType.APPLICATION_JSON})
 public class TokenResource {
 
     private static final Logger logger = Logger.getLogger(TokenResource.class);

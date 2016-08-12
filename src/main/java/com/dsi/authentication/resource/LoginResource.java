@@ -32,7 +32,7 @@ import javax.ws.rs.core.Response;
 @Path("/v1/login_session")
 @Api(value = "/Authentication", description = "Operations about Authentication")
 @Produces({MediaType.APPLICATION_JSON})
-@Consumes({MediaType.WILDCARD})
+@Consumes({MediaType.APPLICATION_JSON})
 public class LoginResource {
 
     private static final Logger logger = Logger.getLogger(LoginResource.class);

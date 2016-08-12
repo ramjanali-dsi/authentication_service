@@ -7,7 +7,7 @@ import com.dsi.authentication.service.TokenService;
 import com.dsi.authentication.service.impl.APIProvider;
 import com.dsi.authentication.service.impl.TokenServiceImpl;
 import com.dsi.authentication.util.Constants;
-import com.dsi.authentication.util.HttpClient;
+import com.dsi.httpclient.HttpClient;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
@@ -39,6 +39,7 @@ public class TokenResource {
     private static final Logger logger = Logger.getLogger(TokenResource.class);
 
     private static final TokenService tokenService = new TokenServiceImpl();
+    private static final HttpClient httpClient = new HttpClient();
 
     @Context
     HttpServletRequest request;
@@ -69,7 +70,8 @@ public class TokenResource {
             bodyObj.put("accessToken", accessToken);
             bodyObj.put("newAccessToken", newAccessToken);
 
-            String result = HttpClient.sendPut(APIProvider.API_USER_SESSION, bodyObj.toString());
+            String result = httpClient.sendPut(APIProvider.API_USER_SESSION, bodyObj.toString(),
+                    Constants.SYSTEM, Constants.SYSTEM_ID);
             logger.info("v1/user_session api call result: " + result);
 
             JSONObject anotherApiResultObj = new JSONObject(result);

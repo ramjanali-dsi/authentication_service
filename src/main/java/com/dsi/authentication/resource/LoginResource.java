@@ -8,8 +8,8 @@ import com.dsi.authentication.model.Tenant;
 import com.dsi.authentication.service.*;
 import com.dsi.authentication.service.impl.*;
 import com.dsi.authentication.util.Constants;
-import com.dsi.authentication.util.HttpClient;
 import com.dsi.authentication.util.Utility;
+import com.dsi.httpclient.HttpClient;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
@@ -40,6 +40,7 @@ public class LoginResource {
     private static final TenantService tenantService = new TenantServiceImpl();
     private static final LoginFactory loginFactory = new LoginFactoryImpl();
     private static final TokenService tokenService = new TokenServiceImpl();
+    private static final HttpClient httpClient = new HttpClient();
 
     @Context
     HttpServletRequest request;
@@ -91,7 +92,8 @@ public class LoginResource {
             userSessionObj.put("modifiedBy", login.getUserId());
             userSessionObj.put("accessToken", accessToken);
 
-            String result = HttpClient.sendPost(APIProvider.API_USER_SESSION, userSessionObj.toString());
+            String result = httpClient.sendPost(APIProvider.API_USER_SESSION, userSessionObj.toString(),
+                    Constants.SYSTEM, Constants.SYSTEM_ID);
             logger.info("v1/user_session api call result: " + result);
 
             JSONObject anotherApiResultObj = new JSONObject(result);
@@ -128,7 +130,8 @@ public class LoginResource {
             bodyObj.put("userId", parseToken.getId());
             bodyObj.put("accessToken", accessToken);
 
-            String result = HttpClient.sendDelete(APIProvider.API_USER_SESSION, bodyObj.toString());
+            String result = httpClient.sendDelete(APIProvider.API_USER_SESSION, bodyObj.toString(),
+                    Constants.SYSTEM, Constants.SYSTEM_ID);
             logger.info("v1/user_session api call result: " + result);
 
             JSONObject anotherApiResultObj = new JSONObject(result);
@@ -166,7 +169,8 @@ public class LoginResource {
             bodyObj.put("userId", parseToken.getId());
             bodyObj.put("accessToken", accessToken);
 
-            String result = HttpClient.sendPost(APIProvider.API_USER_SESSION_VALID, bodyObj.toString());
+            String result = httpClient.sendPost(APIProvider.API_USER_SESSION_VALID, bodyObj.toString(),
+                    Constants.SYSTEM, Constants.SYSTEM_ID);
             logger.info("v1/user_session/is_valid api call result: " + result);
 
             JSONObject anotherApiResultObj = new JSONObject(result);

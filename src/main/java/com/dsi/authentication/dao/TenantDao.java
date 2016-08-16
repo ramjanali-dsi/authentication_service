@@ -8,8 +8,6 @@ import com.dsi.authentication.model.Tenant;
 public interface TenantDao {
 
     boolean saveTenant(Tenant tenant);
-
     boolean updateTenant(Tenant tenant);
-
     Tenant getTenantByID(String tenantID);
 }

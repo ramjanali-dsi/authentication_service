@@ -8,11 +8,11 @@ public class Constants {
     public static final String AUTHORIZATION = "authorization";
 
     public static final String SYSTEM = "system";
-
     public static final String SYSTEM_ID = "1234";
 
     public static final int TIME_INTERVAL = 10000 * 60;
 
+    public static final String SALT = "87c63aae-917c-42ce-b4c7-8a4847db4133";
     public static final String SECRET_KEY = "MTUxMWFlMjctNWZjNS00YmVlLWJlZTMtYmRkNTY2ZWQyY2E3NDg2YTNlNDktNTA0MS00NWRjLTg3NDktNGU5NGJhY2IwN2M3";
 
     public static final String MESSAGE = "message";

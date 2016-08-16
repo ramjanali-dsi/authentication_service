@@ -6,10 +6,8 @@ import com.dsi.authentication.exception.ErrorMessage;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONObject;
 
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.security.SecureRandom;
+import java.util.*;
 
 /**
  * Created by sabbir on 6/13/16.
@@ -17,6 +15,9 @@ import java.util.UUID;
 public class Utility {
 
     private static final Logger logger = Logger.getLogger(Utility.class);
+
+    private static final String CHAR = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789+@";
+    private static final int PASSWORD_LENGTH = 8;
 
     public static boolean isNullOrEmpty(String s){
 
@@ -32,6 +33,18 @@ public class Utility {
             return true;
         }
         return false;
+    }
+
+    public static String generateRandomPassword() {
+        Random random = new SecureRandom();
+
+        String pw = "";
+        for (int i=0; i<PASSWORD_LENGTH; i++)
+        {
+            int index = (int)(random.nextDouble()*CHAR.length());
+            pw += CHAR.substring(index, index+1);
+        }
+        return pw;
     }
 
     public static final String generateRandomString(){

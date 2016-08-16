@@ -9,6 +9,5 @@ import io.jsonwebtoken.Claims;
 public interface TokenService {
 
     String createToken(String id, String issuer, String subject, long time);
-
     Claims parseToken(String accessToken) throws CustomException;
 }

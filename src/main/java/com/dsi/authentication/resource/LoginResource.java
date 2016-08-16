@@ -37,6 +37,7 @@ public class LoginResource {
 
     private static final Logger logger = Logger.getLogger(LoginResource.class);
 
+    private static final LoginService loginService = new LoginServiceImpl();
     private static final TenantService tenantService = new TenantServiceImpl();
     private static final LoginFactory loginFactory = new LoginFactoryImpl();
     private static final TokenService tokenService = new TokenServiceImpl();
@@ -186,6 +187,32 @@ public class LoginResource {
             return Response.ok().entity(responseObj.toString()).build();
 
         } catch (JSONException je){
+            ErrorContext errorContext = new ErrorContext(null, null, je.getMessage());
+            ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0009,
+                    Constants.AUTHENTICATE_SERVICE_0009_DESCRIPTION, errorContext);
+            throw new CustomException(errorMessage);
+        }
+    }
+
+    @POST
+    @Path("/create")
+    @ApiOperation(value = "Create Login Session", notes = "Create Login Session", position = 4)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Create Login success"),
+            @ApiResponse(code = 500, message = "Create Login failed, unauthorized.")
+    })
+    public Response createLoginSession(Login login) throws CustomException {
+        JSONObject responseObj = new JSONObject();
+
+        try {
+            logger.info("Login create:: start");
+            loginService.saveLoginInfo(login);
+            logger.info("Login create:: end");
+
+            responseObj.put(Constants.MESSAGE, "Create login success.");
+            return Response.ok().entity(responseObj.toString()).build();
+
+        } catch (JSONException je) {
             ErrorContext errorContext = new ErrorContext(null, null, je.getMessage());
             ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0009,
                     Constants.AUTHENTICATE_SERVICE_0009_DESCRIPTION, errorContext);

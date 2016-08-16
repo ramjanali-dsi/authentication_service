@@ -66,4 +66,34 @@ public class EmailProvider {
         }).start();
         return true;
     }
+
+    public static boolean constructPasswordCreate(String recipientEmail, String password){
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    String subject = "User Info";
+
+                    Session session = Session.getDefaultInstance(emailProp, null);
+                    MimeMessage message = new MimeMessage(session);
+                    message.setFrom(new InternetAddress(EmailProvider.EMAIL_USERNAME));
+                    message.addRecipient(Message.RecipientType.TO,new InternetAddress(recipientEmail));
+                    message.setSubject(subject);
+                    message.setText("Your account create successfully."
+                            + " \r\t " + "<b> Password: </b>" + password);
+
+                    //send message
+                    Transport transport = session.getTransport(EmailProvider.EMAIL_TRANSPORT);
+                    transport.connect(EmailProvider.EMAIL_HOST, EmailProvider.EMAIL_USERNAME, EmailProvider.EMAIL_PASSWORD);
+                    transport.sendMessage(message, message.getAllRecipients());
+                    transport.close();
+
+                } catch (Exception e){
+                    logger.error("Email confirmation failed: " + e.getMessage());
+                }
+            }
+        }).start();
+        return true;
+    }
 }

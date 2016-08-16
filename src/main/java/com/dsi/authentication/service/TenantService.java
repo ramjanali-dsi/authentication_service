@@ -9,8 +9,6 @@ import com.dsi.authentication.model.Tenant;
 public interface TenantService {
 
     void saveTenant(Tenant tenant) throws CustomException;
-
     void updateTenant(Tenant tenant) throws CustomException;
-
     Tenant getTenantByID(String tenantID) throws CustomException;
 }

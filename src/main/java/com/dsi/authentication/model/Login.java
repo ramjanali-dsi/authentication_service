@@ -23,7 +23,7 @@ public class Login {
     @Column(unique = true, nullable = false, length = 40)
     private String email;
 
-    @Column(length = 50, nullable = false)
+    @Column(length = 50)
     private String password;
 
     @Column(length = 50)
@@ -48,7 +48,7 @@ public class Login {
     private Date createdDate;
 
     @Column(name = "created_by", nullable = false, length = 40)
-    private String createBy;
+    private String createdBy;
 
     @Column(name = "modified_date")
     private Date modifiedDate;
@@ -138,12 +138,12 @@ public class Login {
         this.createdDate = createdDate;
     }
 
-    public String getCreateBy() {
-        return createBy;
+    public String getCreatedBy() {
+        return createdBy;
     }
 
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
+    public void setCreatedBy(String createBy) {
+        this.createdBy = createdBy;
     }
 
     public Date getModifiedDate() {

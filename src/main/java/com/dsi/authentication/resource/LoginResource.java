@@ -206,9 +206,21 @@ public class LoginResource {
 
         try {
             logger.info("Login create:: start");
+            String currentUserID = login.getCreatedBy();
+            String result = httpClient.sendPost(APIProvider.API_USER_SESSION, Utility.getUserObject(login, currentUserID),
+                    Constants.SYSTEM, Constants.SYSTEM_ID);
+            logger.info("v1/user_session api call result: " + result);
+
+            JSONObject resultObj = new JSONObject(result);
+            if (!resultObj.has(Constants.MESSAGE)) {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
+            }
+
+            login.setUserId(responseObj.getString("user_id"));
             loginService.saveLoginInfo(login);
             logger.info("Login create:: end");
 
+            responseObj.put("user_id", login.getUserId());
             responseObj.put(Constants.MESSAGE, "Create login success.");
             return Response.ok().entity(responseObj.toString()).build();
 

@@ -10,11 +10,14 @@ import com.dsi.authentication.service.LoginService;
 import com.dsi.authentication.util.Constants;
 import com.dsi.authentication.util.PasswordHash;
 import com.dsi.authentication.util.Utility;
+import org.apache.log4j.Logger;
 
 /**
  * Created by sabbir on 6/16/16.
  */
 public class LoginServiceImpl implements LoginService {
+
+    private static final Logger logger = Logger.getLogger(LoginServiceImpl.class);
 
     private static final LoginDao dao = new LoginDaoImpl();
 
@@ -26,6 +29,7 @@ public class LoginServiceImpl implements LoginService {
         login.setModifiedDate(Utility.today());
 
         String password = Utility.generateRandomPassword();
+        logger.info("Password: " + password);
         login.setSalt(Constants.SALT);
         login.setPassword(PasswordHash.hash(password, Constants.SALT));
 

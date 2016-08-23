@@ -56,6 +56,15 @@ public class Login {
     @Column(name = "modified_by", nullable = false, length = 40)
     private String modifiedBy;
 
+    @Transient
+    private String roleId;
+
+    @Transient
+    private String gender;
+
+    @Transient
+    private String phone;
+
     private int version;
 
     public String getLoginId() {
@@ -168,5 +177,29 @@ public class Login {
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    public String getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }

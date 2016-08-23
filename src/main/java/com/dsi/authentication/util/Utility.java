@@ -3,7 +3,9 @@ package com.dsi.authentication.util;
 import com.dsi.authentication.exception.CustomException;
 import com.dsi.authentication.exception.ErrorContext;
 import com.dsi.authentication.exception.ErrorMessage;
+import com.dsi.authentication.model.Login;
 import org.apache.log4j.Logger;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.security.SecureRandom;
@@ -81,5 +83,20 @@ public class Utility {
     public static final String getTokenSecretKey(String key){
         byte[] valueDecoded = Base64.getDecoder().decode(key.getBytes());
         return new String(valueDecoded);
+    }
+
+    public static final String getUserObject(Login login, String currentUserID) throws JSONException {
+        JSONObject userObj = new JSONObject();
+        userObj.put("firstName", login.getFirstName());
+        userObj.put("lastName", login.getLastName());
+        userObj.put("gender", login.getGender());
+        userObj.put("email", login.getEmail());
+        userObj.put("phone", login.getPhone());
+        userObj.put("createBy", currentUserID);
+        userObj.put("modifiedBy", currentUserID);
+        userObj.put("roleId", login.getRoleId());
+        userObj.put("version", 1);
+
+        return userObj.toString();
     }
 }

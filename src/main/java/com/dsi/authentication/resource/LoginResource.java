@@ -207,9 +207,9 @@ public class LoginResource {
         try {
             logger.info("Login create:: start");
             String currentUserID = login.getCreatedBy();
-            String result = httpClient.sendPost(APIProvider.API_USER_SESSION, Utility.getUserObject(login, currentUserID),
+            String result = httpClient.sendPost(APIProvider.API_USER, Utility.getUserObject(login, currentUserID),
                     Constants.SYSTEM, Constants.SYSTEM_ID);
-            logger.info("v1/user_session api call result: " + result);
+            logger.info("v1/user api call result: " + result);
 
             JSONObject resultObj = new JSONObject(result);
             if (!resultObj.has(Constants.MESSAGE)) {

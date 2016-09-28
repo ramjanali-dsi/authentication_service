@@ -10,7 +10,7 @@ public class Constants {
     public static final String SYSTEM = "system";
     public static final String SYSTEM_ID = "0759a760-b9df-4c8a-8a64-fa31f256d13b";
 
-    public static final int TIME_INTERVAL = 10000 * 60;
+    public static final int TIME_INTERVAL = 30000 * 60;
 
     public static final String SALT = "87c63aae-917c-42ce-b4c7-8a4847db4133";
     public static final String SECRET_KEY = "MTUxMWFlMjctNWZjNS00YmVlLWJlZTMtYmRkNTY2ZWQyY2E3NDg2YTNlNDktNTA0MS00NWRjLTg3NDktNGU5NGJhY2IwN2M3";

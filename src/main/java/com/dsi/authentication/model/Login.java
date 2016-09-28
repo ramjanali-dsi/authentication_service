@@ -35,7 +35,7 @@ public class Login {
     @Column(name = "last_name", length = 40)
     private String lastName;
 
-    @Column(name = "user_id", nullable = false, length = 40)
+    @Column(name = "user_id", length = 40)
     private String userId;
 
     @Column(name = "reset_password_token", length = 200)
@@ -47,13 +47,13 @@ public class Login {
     @Column(name = "created_date")
     private Date createdDate;
 
-    @Column(name = "created_by", nullable = false, length = 40)
-    private String createdBy;
+    @Column(name = "created_by", length = 40)
+    private String createBy;
 
     @Column(name = "modified_date")
     private Date modifiedDate;
 
-    @Column(name = "modified_by", nullable = false, length = 40)
+    @Column(name = "modified_by", length = 40)
     private String modifiedBy;
 
     @Transient
@@ -147,12 +147,12 @@ public class Login {
         this.createdDate = createdDate;
     }
 
-    public String getCreatedBy() {
-        return createdBy;
+    public String getCreateBy() {
+        return createBy;
     }
 
-    public void setCreatedBy(String createBy) {
-        this.createdBy = createdBy;
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
     }
 
     public Date getModifiedDate() {

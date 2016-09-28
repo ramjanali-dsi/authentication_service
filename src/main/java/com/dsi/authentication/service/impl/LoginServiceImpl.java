@@ -81,6 +81,17 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
+    public void deleteLoginInfo(String userID) throws CustomException {
+        boolean res = dao.deleteLoginInfo(userID);
+        if(!res){
+            ErrorContext errorContext = new ErrorContext(null, "Login", "Login info delete failed.");
+            ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0004,
+                    Constants.AUTHENTICATE_SERVICE_0004_DESCRIPTION, errorContext);
+            throw new CustomException(errorMessage);
+        }
+    }
+
+    @Override
     public Login getLoginInfo(String userID, String email) throws CustomException {
         Login login = dao.getLoginInfo(userID, email);
         if(login == null){

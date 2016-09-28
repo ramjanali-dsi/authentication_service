@@ -10,6 +10,7 @@ import com.dsi.authentication.service.impl.*;
 import com.dsi.authentication.util.Constants;
 import com.dsi.authentication.util.Utility;
 import com.dsi.httpclient.HttpClient;
+import com.google.gson.Gson;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
@@ -113,12 +114,12 @@ public class LoginResource {
     }
 
     @DELETE
-    @ApiOperation(value = "Delete Login Session", notes = "Delete Login Session", position = 2)
+    @ApiOperation(value = "Delete User Session", notes = "Delete User Session", position = 2)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Logout success"),
             @ApiResponse(code = 500, message = "Logout failed, unauthorized.")
     })
-    public Response deleteLoginSession() throws CustomException {
+    public Response deleteUserSession() throws CustomException {
         String accessToken = request.getAttribute("access_token") != null ?
                 request.getAttribute("access_token").toString() : null;
 
@@ -205,8 +206,12 @@ public class LoginResource {
         JSONObject responseObj = new JSONObject();
 
         try {
+            logger.info("Request body: " + new Gson().toJson(login));
+
             logger.info("Login create:: start");
-            String currentUserID = login.getCreatedBy();
+            String currentUserID = login.getCreateBy();
+
+            logger.info("Request body for user create: " + Utility.getUserObject(login, currentUserID));
             String result = httpClient.sendPost(APIProvider.API_USER, Utility.getUserObject(login, currentUserID),
                     Constants.SYSTEM, Constants.SYSTEM_ID);
             logger.info("v1/user api call result: " + result);
@@ -216,7 +221,7 @@ public class LoginResource {
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
             }
 
-            login.setUserId(responseObj.getString("user_id"));
+            login.setUserId(resultObj.getString("user_id"));
             loginService.saveLoginInfo(login);
             logger.info("Login create:: end");
 
@@ -225,6 +230,32 @@ public class LoginResource {
             return Response.ok().entity(responseObj.toString()).build();
 
         } catch (JSONException je) {
+            ErrorContext errorContext = new ErrorContext(null, null, je.getMessage());
+            ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0009,
+                    Constants.AUTHENTICATE_SERVICE_0009_DESCRIPTION, errorContext);
+            throw new CustomException(errorMessage);
+        }
+    }
+
+    @DELETE
+    @Path("/delete/{user_id}")
+    @ApiOperation(value = "Delete Login Info", notes = "Delete Login Info", position = 5)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Delete login info success"),
+            @ApiResponse(code = 500, message = "Delete login info failed, unauthorized.")
+    })
+    public Response deleteLogin(@PathParam("user_id") String userID) throws CustomException {
+        JSONObject responseObj = new JSONObject();
+
+        try {
+            logger.info("Login delete:: start");
+            loginService.deleteLoginInfo(userID);
+            logger.info("Login delete:: end");
+
+            responseObj.put(Constants.MESSAGE, "Delete login info success");
+            return Response.ok().entity(responseObj.toString()).build();
+
+        } catch (JSONException je){
             ErrorContext errorContext = new ErrorContext(null, null, je.getMessage());
             ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0009,
                     Constants.AUTHENTICATE_SERVICE_0009_DESCRIPTION, errorContext);

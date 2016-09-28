@@ -25,6 +25,29 @@ public class LoginDaoImpl extends BaseDao implements LoginDao {
     }
 
     @Override
+    public boolean deleteLoginInfo(String userID) {
+        Session session = null;
+        boolean success = true;
+        try {
+            session = getSession();
+            Query query = session.createQuery("DELETE FROM Login l WHERE l.userId =:userID");
+            query.setParameter("userID", userID);
+
+            success = query.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            logger.error("Database error occurs when delete: " + e.getMessage());
+            success = false;
+
+        } finally {
+            if(session != null) {
+                close(session);
+            }
+        }
+        return success;
+    }
+
+    @Override
     public Login getLoginInfo(String userID, String email) {
         Session session = null;
         Login login = null;

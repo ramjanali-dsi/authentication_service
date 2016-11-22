@@ -36,11 +36,6 @@ public class SessionUtil {
 
         ServiceRegistry serviceRegistry = builder.buildServiceRegistry();
         sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-
-        /*ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().
-                applySettings(configuration.getProperties()).build();
-
-        sessionFactory = configuration.buildSessionFactory(serviceRegistry);*/
     }
 
     public static Session getSession(){

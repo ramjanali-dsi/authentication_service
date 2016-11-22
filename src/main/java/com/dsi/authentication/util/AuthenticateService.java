@@ -14,10 +14,8 @@ public class AuthenticateService extends ResourceConfig {
     public AuthenticateService(){
         packages(LoginResource.class.getPackage().getName());
         register(ResponseCORSFilter.class);
-        //register(AccessTokenFilter.class);
-
         register(CheckAuthorizationFilter.class);
 
-        //SessionUtil.getSession();
+        SessionUtil.getSession();
     }
 }

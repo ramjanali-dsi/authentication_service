@@ -6,12 +6,13 @@ import com.dsi.authentication.exception.ErrorMessage;
 import com.dsi.authentication.model.Login;
 import com.dsi.authentication.service.LoginService;
 import com.dsi.authentication.service.TokenService;
-import com.dsi.authentication.service.impl.EmailProvider;
+import com.dsi.authentication.service.impl.APIProvider;
 import com.dsi.authentication.service.impl.LoginServiceImpl;
 import com.dsi.authentication.service.impl.TokenServiceImpl;
 import com.dsi.authentication.util.Constants;
 import com.dsi.authentication.util.PasswordHash;
 import com.dsi.authentication.util.Utility;
+import com.dsi.httpclient.HttpClient;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
@@ -42,6 +43,7 @@ public class PasswordResource {
 
     private static final TokenService tokenService = new TokenServiceImpl();
     private static final LoginService loginService = new LoginServiceImpl();
+    private static final HttpClient httpClient = new HttpClient();
 
     @Context
     HttpServletRequest request;
@@ -75,7 +77,17 @@ public class PasswordResource {
             loginService.updateLoginInfo(login);
             logger.info("Update login info successfully.");
 
-            EmailProvider.constructResetPasswordRequestToken(login.getEmail(), resetUrl + token);
+            String body = Utility.getForgetPasswordBody(resetUrl + token, login.getFirstName());
+            logger.info("Notification create api call: " + Utility.getNotificationObject(login.getEmail(),
+                    body, Constants.RESET_PASS_TEMPLATE_ID));
+
+            String result = httpClient.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationObject(
+                    login.getEmail(), body, Constants.RESET_PASS_TEMPLATE_ID), Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
+
+            JSONObject resultObj = new JSONObject(result);
+            if(!resultObj.has(Constants.MESSAGE)){
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
+            }
             logger.info("An email sent to the user for reset password.");
 
             responseObj.put(Constants.MESSAGE, "Reset password request success");
@@ -121,6 +133,18 @@ public class PasswordResource {
 
                 loginService.updateLoginInfo(login);
                 logger.info("Update login info successfully.");
+
+                String body = Utility.getResetPasswordChangeBody(newPassword ,login.getFirstName());
+                logger.info("Notification create api call: " + Utility.getNotificationObject(login.getEmail(),
+                        body, Constants.RESET_PASS_CHANGE_TEMPLATE_ID));
+
+                String result = httpClient.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationObject(
+                        login.getEmail(), body, Constants.RESET_PASS_CHANGE_TEMPLATE_ID), Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
+
+                JSONObject resultObj = new JSONObject(result);
+                if(!resultObj.has(Constants.MESSAGE)){
+                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
+                }
 
                 logger.info("Password reset successfully.");
                 responseObj.put(Constants.MESSAGE, "Password reset success");
@@ -177,6 +201,18 @@ public class PasswordResource {
                 login.setModifiedDate(Utility.today());
                 loginService.updateLoginInfo(login);
                 logger.info("Update login info successfully.");
+
+                String body = Utility.getPasswordChangeBody(login.getFirstName());
+                logger.info("Notification create api call: " + Utility.getNotificationObject(login.getEmail(),
+                        body, Constants.PASS_CHANGE_TEMPLATE_ID));
+
+                String result = httpClient.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationObject(
+                        login.getEmail(), body, Constants.PASS_CHANGE_TEMPLATE_ID), Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
+
+                JSONObject resultObj = new JSONObject(result);
+                if(!resultObj.has(Constants.MESSAGE)){
+                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
+                }
 
                 responseObj.put(Constants.MESSAGE, "Password change success");
                 return Response.ok().entity(responseObj.toString()).build();

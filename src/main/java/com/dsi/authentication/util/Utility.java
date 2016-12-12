@@ -5,6 +5,7 @@ import com.dsi.authentication.exception.ErrorContext;
 import com.dsi.authentication.exception.ErrorMessage;
 import com.dsi.authentication.model.Login;
 import org.apache.log4j.Logger;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -49,15 +50,15 @@ public class Utility {
         return pw;
     }
 
-    public static final String generateRandomString(){
+    public static String generateRandomString(){
         return UUID.randomUUID().toString();
     }
 
-    public static final Date today() {
+    public static Date today() {
         return new Date();
     }
 
-    public static final String validation(JSONObject requestObj, String str) throws CustomException {
+    public static String validation(JSONObject requestObj, String str) throws CustomException {
 
         ErrorContext errorContext;
         try {
@@ -75,17 +76,17 @@ public class Utility {
         throw new CustomException(errorMessage);
     }
 
-    public static final String getFinalToken(String header) {
+    public static String getFinalToken(String header) {
         String[] tokenPart = header.split("[\\$\\(\\)]");
         return tokenPart[2];
     }
 
-    public static final String getTokenSecretKey(String key){
+    public static String getTokenSecretKey(String key){
         byte[] valueDecoded = Base64.getDecoder().decode(key.getBytes());
         return new String(valueDecoded);
     }
 
-    public static final String getUserObject(Login login, String currentUserID) throws JSONException {
+    public static String getUserObject(Login login, String currentUserID) throws JSONException {
         JSONObject userObj = new JSONObject();
         userObj.put("firstName", login.getFirstName());
         userObj.put("lastName", login.getLastName());
@@ -98,5 +99,50 @@ public class Utility {
         userObj.put("version", 1);
 
         return userObj.toString();
+    }
+
+    public static String getNotificationObject(String email, String body, Long templateId) throws JSONException {
+        JSONObject contentObj = new JSONObject();
+        contentObj.put("recipient", new JSONArray().put(email).toString());
+        contentObj.put("body", body);
+
+        JSONObject notificationObj = new JSONObject();
+        notificationObj.put("notificationTypeId", Constants.NOTIFICATION_EMAIL_TYPE_ID);
+        notificationObj.put("notificationTemplateId", templateId);
+        notificationObj.put("systemId", Constants.SYSTEM_ID);
+        notificationObj.put("contentJson", contentObj.toString());
+        notificationObj.put("maxRetryCount", 5);
+        notificationObj.put("processed", true);
+        notificationObj.put("retryInterval", 1);
+
+        return notificationObj.toString();
+    }
+
+    public static String getForgetPasswordBody(String token, String name){
+        return  "Dear  " + name + ",\n" +
+                "You requested a new password for your account. You can reset your password by clicking the link below:\n" +
+                token + "\n\n" +
+                "If you did not request for a new password, please ignore this mail.\n" +
+                " \n" +
+                "Sincerely,\n" +
+                "Dynamic Solutions Innovators";
+    }
+
+    public static String getResetPasswordChangeBody(String password, String name){
+        return  "Dear  " + name + ",\n" +
+                "Your password has been reset to " + password +
+                "\n\n" +
+                "We recommend that you change your password after you login" +
+                "\n\n" +
+                "Sincerely,\n" +
+                "Dynamic Solutions Innovators";
+    }
+
+    public static String getPasswordChangeBody(String name){
+        return  "Dear  " + name + ",\n" +
+                "Your password has been changed successfully." +
+                "\n\n" +
+                "Sincerely,\n" +
+                "Dynamic Solutions Innovators";
     }
 }

@@ -22,7 +22,7 @@ public class LoginServiceImpl implements LoginService {
     private static final LoginDao dao = new LoginDaoImpl();
 
     @Override
-    public void saveLoginInfo(Login login) throws CustomException {
+    public String saveLoginInfo(Login login) throws CustomException {
         validateInputForCreation(login);
 
         login.setCreatedDate(Utility.today());
@@ -41,7 +41,7 @@ public class LoginServiceImpl implements LoginService {
             throw new CustomException(errorMessage);
         }
 
-        EmailProvider.constructPasswordCreate(login.getEmail(), password);
+        return password;
     }
 
     private void validateInputForCreation(Login login) throws CustomException {

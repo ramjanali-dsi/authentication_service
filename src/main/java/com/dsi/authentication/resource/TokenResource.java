@@ -71,7 +71,7 @@ public class TokenResource {
             bodyObj.put("newAccessToken", newAccessToken);
 
             String result = httpClient.sendPut(APIProvider.API_USER_SESSION, bodyObj.toString(),
-                    Constants.SYSTEM, Constants.SYSTEM_ID);
+                    Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
             logger.info("v1/user_session api call result: " + result);
 
             JSONObject anotherApiResultObj = new JSONObject(result);

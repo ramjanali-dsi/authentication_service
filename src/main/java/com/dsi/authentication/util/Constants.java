@@ -1,5 +1,7 @@
 package com.dsi.authentication.util;
 
+import scala.util.parsing.combinator.testing.Str;
+
 /**
  * Created by sabbir on 6/15/16.
  */
@@ -8,7 +10,13 @@ public class Constants {
     public static final String AUTHORIZATION = "authorization";
 
     public static final String SYSTEM = "system";
-    public static final String SYSTEM_ID = "0759a760-b9df-4c8a-8a64-fa31f256d13b";
+    public static final String SYSTEM_HEADER_ID = "0759a760-b9df-4c8a-8a64-fa31f256d13b";
+
+    static final String SYSTEM_ID = "425744ba-6c10-47c0-91cf-5a4c05265b56";
+    static final Long NOTIFICATION_EMAIL_TYPE_ID = 1L;
+    public static final Long RESET_PASS_TEMPLATE_ID = 2L;
+    public static final Long RESET_PASS_CHANGE_TEMPLATE_ID = 3L;
+    public static final Long PASS_CHANGE_TEMPLATE_ID = 4L;
 
     public static final int TIME_INTERVAL = 30000 * 60;
 

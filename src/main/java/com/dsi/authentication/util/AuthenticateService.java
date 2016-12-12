@@ -12,7 +12,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 public class AuthenticateService extends ResourceConfig {
 
     public AuthenticateService(){
-        packages(LoginResource.class.getPackage().getName());
+        packages("com.dsi.authentication");
         register(ResponseCORSFilter.class);
         register(CheckAuthorizationFilter.class);
 

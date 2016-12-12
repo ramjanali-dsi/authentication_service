@@ -26,6 +26,9 @@ public class APIProvider {
         }
     }
 
+    public static final String NOTIFICATION_BASE_URL = apiProp.getProperty("base.notification.url");
+    public static final String API_NOTIFICATION_CREATE = NOTIFICATION_BASE_URL + apiProp.getProperty("notification.create");
+
     public static final String BASE_URL = apiProp.getProperty("base.url");
     public static final String API_USER = BASE_URL + apiProp.getProperty("authorization.user");
     public static final String API_USER_SESSION = BASE_URL + apiProp.getProperty("authorization.user.session");

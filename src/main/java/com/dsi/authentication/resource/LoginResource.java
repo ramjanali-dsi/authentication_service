@@ -95,7 +95,7 @@ public class LoginResource {
             userSessionObj.put("accessToken", accessToken);
 
             String result = httpClient.sendPost(APIProvider.API_USER_SESSION, userSessionObj.toString(),
-                    Constants.SYSTEM, Constants.SYSTEM_ID);
+                    Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
             logger.info("v1/user_session api call result: " + result);
 
             JSONObject anotherApiResultObj = new JSONObject(result);
@@ -133,7 +133,7 @@ public class LoginResource {
             bodyObj.put("accessToken", accessToken);
 
             String result = httpClient.sendDelete(APIProvider.API_USER_SESSION, bodyObj.toString(),
-                    Constants.SYSTEM, Constants.SYSTEM_ID);
+                    Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
             logger.info("v1/user_session api call result: " + result);
 
             JSONObject anotherApiResultObj = new JSONObject(result);
@@ -172,7 +172,7 @@ public class LoginResource {
             bodyObj.put("accessToken", accessToken);
 
             String result = httpClient.sendPost(APIProvider.API_USER_SESSION_VALID, bodyObj.toString(),
-                    Constants.SYSTEM, Constants.SYSTEM_ID);
+                    Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
             logger.info("v1/user_session/is_valid api call result: " + result);
 
             JSONObject anotherApiResultObj = new JSONObject(result);
@@ -213,7 +213,7 @@ public class LoginResource {
 
             logger.info("Request body for user create: " + Utility.getUserObject(login, currentUserID));
             String result = httpClient.sendPost(APIProvider.API_USER, Utility.getUserObject(login, currentUserID),
-                    Constants.SYSTEM, Constants.SYSTEM_ID);
+                    Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
             logger.info("v1/user api call result: " + result);
 
             JSONObject resultObj = new JSONObject(result);
@@ -222,10 +222,11 @@ public class LoginResource {
             }
 
             login.setUserId(resultObj.getString("user_id"));
-            loginService.saveLoginInfo(login);
+            String password = loginService.saveLoginInfo(login);
             logger.info("Login create:: end");
 
             responseObj.put("user_id", login.getUserId());
+            responseObj.put("password", password);
             responseObj.put(Constants.MESSAGE, "Create login success.");
             return Response.ok().entity(responseObj.toString()).build();
 

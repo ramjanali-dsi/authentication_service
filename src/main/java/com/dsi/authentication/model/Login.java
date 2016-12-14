@@ -56,6 +56,9 @@ public class Login {
     @Column(name = "modified_by", length = 40)
     private String modifiedBy;
 
+    @Column(name = "is_active")
+    private boolean isActive;
+
     @Transient
     private String roleId;
 
@@ -169,6 +172,14 @@ public class Login {
 
     public void setModifiedBy(String modifiedBy) {
         this.modifiedBy = modifiedBy;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public int getVersion() {

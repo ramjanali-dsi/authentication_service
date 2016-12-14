@@ -20,8 +20,9 @@ public class DBLoginHandlerDaoImpl extends BaseDao implements DBLoginHandlerDao 
         Login login = null;
         try {
             session = getSession();
-            Query query = session.createQuery("FROM Login l WHERE l.email =:email");
+            Query query = session.createQuery("FROM Login l WHERE l.email =:email AND l.isActive =:active");
             query.setParameter("email", email);
+            query.setParameter("active", true);
 
             login = (Login) query.uniqueResult();
             if(login != null){

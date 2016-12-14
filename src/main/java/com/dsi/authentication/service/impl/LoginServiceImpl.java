@@ -81,6 +81,29 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
+    public void updateLoginInfo(Login login, String userId) throws CustomException {
+        Login existLogin = dao.getLoginInfo(userId, null);
+        if(existLogin == null){
+            ErrorContext errorContext = new ErrorContext(null, "Login",
+                    "Login info not found by userID: " + userId);
+            ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0005,
+                    Constants.AUTHENTICATE_SERVICE_0005_DESCRIPTION, errorContext);
+            throw new CustomException(errorMessage);
+        }
+
+        existLogin.setActive(login.isActive());
+        existLogin.setModifiedBy(login.getModifiedBy());
+        existLogin.setModifiedDate(Utility.today());
+        boolean res = dao.updateLoginInfo(existLogin);
+        if(!res){
+            ErrorContext errorContext = new ErrorContext(null, "Login", "Login info update failed.");
+            ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0003,
+                    Constants.AUTHENTICATE_SERVICE_0003_DESCRIPTION, errorContext);
+            throw new CustomException(errorMessage);
+        }
+    }
+
+    @Override
     public void deleteLoginInfo(String userID) throws CustomException {
         boolean res = dao.deleteLoginInfo(userID);
         if(!res){

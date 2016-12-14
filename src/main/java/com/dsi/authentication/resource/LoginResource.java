@@ -15,6 +15,7 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
+import com.wordnik.swagger.jaxrs.PATCH;
 import io.jsonwebtoken.Claims;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
@@ -238,9 +239,37 @@ public class LoginResource {
         }
     }
 
+    @PUT
+    @Path("/update/{user_id}")
+    @ApiOperation(value = "Update Login Session", notes = "Update Login Session", position = 5)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Update Login success"),
+            @ApiResponse(code = 500, message = "Update Login failed, unauthorized.")
+    })
+    public Response updateLoginSession(@PathParam("user_id") String userId, Login login) throws CustomException {
+        JSONObject responseObj = new JSONObject();
+
+        try {
+            logger.info("Request body: " + new Gson().toJson(login));
+            logger.info("UserId: " + userId);
+            logger.info("Login update:: start");
+            loginService.updateLoginInfo(login, userId);
+            logger.info("Login update:: end");
+
+            responseObj.put(Constants.MESSAGE, "Update login success.");
+            return Response.ok().entity(responseObj.toString()).build();
+
+        } catch (JSONException je) {
+            ErrorContext errorContext = new ErrorContext(null, null, je.getMessage());
+            ErrorMessage errorMessage = new ErrorMessage(Constants.AUTHENTICATE_SERVICE_0009,
+                    Constants.AUTHENTICATE_SERVICE_0009_DESCRIPTION, errorContext);
+            throw new CustomException(errorMessage);
+        }
+    }
+
     @DELETE
     @Path("/delete/{user_id}")
-    @ApiOperation(value = "Delete Login Info", notes = "Delete Login Info", position = 5)
+    @ApiOperation(value = "Delete Login Info", notes = "Delete Login Info", position = 6)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Delete login info success"),
             @ApiResponse(code = 500, message = "Delete login info failed, unauthorized.")

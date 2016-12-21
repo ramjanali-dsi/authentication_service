@@ -4,10 +4,13 @@ import com.dsi.authentication.exception.CustomException;
 import com.dsi.authentication.exception.ErrorContext;
 import com.dsi.authentication.exception.ErrorMessage;
 import com.dsi.authentication.model.Login;
+import com.dsi.authentication.model.Tenant;
 import com.dsi.authentication.service.LoginService;
+import com.dsi.authentication.service.TenantService;
 import com.dsi.authentication.service.TokenService;
 import com.dsi.authentication.service.impl.APIProvider;
 import com.dsi.authentication.service.impl.LoginServiceImpl;
+import com.dsi.authentication.service.impl.TenantServiceImpl;
 import com.dsi.authentication.service.impl.TokenServiceImpl;
 import com.dsi.authentication.util.Constants;
 import com.dsi.authentication.util.PasswordHash;
@@ -43,6 +46,7 @@ public class PasswordResource {
 
     private static final TokenService tokenService = new TokenServiceImpl();
     private static final LoginService loginService = new LoginServiceImpl();
+    private static final TenantService tenantService = new TenantServiceImpl();
     private static final HttpClient httpClient = new HttpClient();
 
     @Context
@@ -56,6 +60,9 @@ public class PasswordResource {
             @ApiResponse(code = 500, message = "Reset password request failed, unauthorized.")
     })
     public Response resetPasswordRequest(String requestBody) throws CustomException {
+        String tenantId = request.getAttribute("tenant_id") != null ?
+                request.getAttribute("tenant_id").toString() : null;
+
         JSONObject responseObj = new JSONObject();
         JSONObject requestObj;
 
@@ -77,18 +84,26 @@ public class PasswordResource {
             loginService.updateLoginInfo(login);
             logger.info("Update login info successfully.");
 
-            /*String body = Utility.getForgetPasswordBody(resetUrl + token, login.getFirstName());
-            logger.info("Notification create api call: " + Utility.getNotificationObject(login.getEmail(),
-                    body, Constants.RESET_PASS_TEMPLATE_ID));
+            Tenant tenant = tenantService.getTenantByID(tenantId);
 
-            String result = httpClient.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationObject(
-                    login.getEmail(), body, Constants.RESET_PASS_TEMPLATE_ID), Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
+            JSONObject contentObj = new JSONObject();
+            contentObj.put("recipient", login.getEmail());
+            contentObj.put("EmployeeFirstName", login.getFirstName());
+            contentObj.put("EmployeeLastName", login.getLastName());
+            contentObj.put("link", resetUrl + token);
+            contentObj.put("tenantName", tenant.getName());
+
+            logger.info("Notification create api call: " + Utility.getNotificationObject(contentObj,
+                    Constants.RESET_PASS_TEMPLATE_ID));
+
+            String result = httpClient.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationObject(contentObj,
+                    Constants.RESET_PASS_TEMPLATE_ID), Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
 
             JSONObject resultObj = new JSONObject(result);
             if(!resultObj.has(Constants.MESSAGE)){
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
             }
-            logger.info("An email sent to the user for reset password.");*/
+            logger.info("An email processing start for reset password link.");
 
             responseObj.put(Constants.MESSAGE, "Reset password request success");
             return Response.ok().entity(responseObj.toString()).build();
@@ -110,6 +125,9 @@ public class PasswordResource {
     })
     public Response changePasswordFromResetRequest(@PathParam("reset_token") String resetToken,
                                                    String requestBody) throws CustomException {
+        String tenantId = request.getAttribute("tenant_id") != null ?
+                request.getAttribute("tenant_id").toString() : null;
+
         JSONObject responseObj = new JSONObject();
         JSONObject requestObj;
         ErrorContext errorContext;
@@ -134,17 +152,26 @@ public class PasswordResource {
                 loginService.updateLoginInfo(login);
                 logger.info("Update login info successfully.");
 
-                /*String body = Utility.getResetPasswordChangeBody(newPassword ,login.getFirstName());
-                logger.info("Notification create api call: " + Utility.getNotificationObject(login.getEmail(),
-                        body, Constants.RESET_PASS_CHANGE_TEMPLATE_ID));
+                Tenant tenant = tenantService.getTenantByID(tenantId);
 
-                String result = httpClient.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationObject(
-                        login.getEmail(), body, Constants.RESET_PASS_CHANGE_TEMPLATE_ID), Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
+                JSONObject contentObj = new JSONObject();
+                contentObj.put("recipient", login.getEmail());
+                contentObj.put("EmployeeFirstName", login.getFirstName());
+                contentObj.put("EmployeeLastName", login.getLastName());
+                contentObj.put("NewPassword", newPassword);
+                contentObj.put("tenantName", tenant.getName());
+
+                logger.info("Notification create api call: " + Utility.getNotificationObject(contentObj,
+                        Constants.RESET_PASS_CHANGE_TEMPLATE_ID));
+
+                String result = httpClient.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationObject(contentObj,
+                        Constants.RESET_PASS_CHANGE_TEMPLATE_ID), Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
 
                 JSONObject resultObj = new JSONObject(result);
                 if(!resultObj.has(Constants.MESSAGE)){
                     return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
-                }*/
+                }
+                logger.info("An email processing start for reset password confirmation.");
 
                 logger.info("Password reset successfully.");
                 responseObj.put(Constants.MESSAGE, "Password reset success");
@@ -202,17 +229,23 @@ public class PasswordResource {
                 loginService.updateLoginInfo(login);
                 logger.info("Update login info successfully.");
 
-                /*String body = Utility.getPasswordChangeBody(login.getFirstName());
-                logger.info("Notification create api call: " + Utility.getNotificationObject(login.getEmail(),
-                        body, Constants.PASS_CHANGE_TEMPLATE_ID));
+                JSONObject contentObj = new JSONObject();
+                contentObj.put("recipient", login.getEmail());
+                contentObj.put("EmployeeFirstName", login.getFirstName());
+                contentObj.put("EmployeeLastName", login.getLastName());
+                contentObj.put("tenantName", parseToken.getIssuer());
 
-                String result = httpClient.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationObject(
-                        login.getEmail(), body, Constants.PASS_CHANGE_TEMPLATE_ID), Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
+                logger.info("Notification create api call: " + Utility.getNotificationObject(contentObj,
+                        Constants.PASS_CHANGE_TEMPLATE_ID));
+
+                String result = httpClient.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationObject(contentObj,
+                        Constants.PASS_CHANGE_TEMPLATE_ID), Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
 
                 JSONObject resultObj = new JSONObject(result);
                 if(!resultObj.has(Constants.MESSAGE)){
                     return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
-                }*/
+                }
+                logger.info("An email processing start for change password confirmation.");
 
                 responseObj.put(Constants.MESSAGE, "Password change success");
                 return Response.ok().entity(responseObj.toString()).build();

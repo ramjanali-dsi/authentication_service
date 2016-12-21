@@ -5,7 +5,6 @@ import com.dsi.authentication.exception.ErrorContext;
 import com.dsi.authentication.exception.ErrorMessage;
 import com.dsi.authentication.model.Login;
 import org.apache.log4j.Logger;
-import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -101,11 +100,7 @@ public class Utility {
         return userObj.toString();
     }
 
-    public static String getNotificationObject(String email, String body, Long templateId) throws JSONException {
-        JSONObject contentObj = new JSONObject();
-        contentObj.put("recipient", new JSONArray().put(email).toString());
-        contentObj.put("body", body);
-
+    public static String getNotificationObject(JSONObject contentObj, Long templateId) throws JSONException {
         JSONObject notificationObj = new JSONObject();
         notificationObj.put("notificationTypeId", Constants.NOTIFICATION_EMAIL_TYPE_ID);
         notificationObj.put("notificationTemplateId", templateId);
@@ -116,33 +111,5 @@ public class Utility {
         notificationObj.put("retryInterval", 1);
 
         return notificationObj.toString();
-    }
-
-    public static String getForgetPasswordBody(String token, String name){
-        return  "Dear  " + name + ",\n" +
-                "You requested a new password for your account. You can reset your password by clicking the link below:\n" +
-                token + "\n\n" +
-                "If you did not request for a new password, please ignore this mail.\n" +
-                " \n" +
-                "Sincerely,\n" +
-                "Dynamic Solutions Innovators";
-    }
-
-    public static String getResetPasswordChangeBody(String password, String name){
-        return  "Dear  " + name + ",\n" +
-                "Your password has been reset to " + password +
-                "\n\n" +
-                "We recommend that you change your password after you login" +
-                "\n\n" +
-                "Sincerely,\n" +
-                "Dynamic Solutions Innovators";
-    }
-
-    public static String getPasswordChangeBody(String name){
-        return  "Dear  " + name + ",\n" +
-                "Your password has been changed successfully." +
-                "\n\n" +
-                "Sincerely,\n" +
-                "Dynamic Solutions Innovators";
     }
 }

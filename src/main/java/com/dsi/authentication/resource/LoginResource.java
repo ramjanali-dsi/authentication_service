@@ -77,13 +77,14 @@ public class LoginResource {
             Login login = loginHandler.validateUser(username, password);
             logger.info("Login successfully.");
 
+            responseObj.put("tenant_name", tenant.getName());
             responseObj.put("login_id", login.getLoginId());
             responseObj.put("first_name", login.getFirstName());
             responseObj.put("last_name", login.getLastName());
             responseObj.put("user_id", login.getUserId());
             responseObj.put("username", login.getEmail());
 
-            String accessToken = tokenService.createToken(login.getUserId(), login.getFirstName(),
+            String accessToken = tokenService.createToken(login.getUserId(), tenant.getName(),
                     responseObj.toString(), Constants.TIME_INTERVAL);
 
             logger.info("Generated AccessToken: " + accessToken);

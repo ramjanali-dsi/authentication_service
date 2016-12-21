@@ -13,10 +13,11 @@ public class Constants {
     public static final String SYSTEM_HEADER_ID = "0759a760-b9df-4c8a-8a64-fa31f256d13b";
 
     static final String SYSTEM_ID = "425744ba-6c10-47c0-91cf-5a4c05265b56";
+
     static final Long NOTIFICATION_EMAIL_TYPE_ID = 1L;
-    public static final Long RESET_PASS_TEMPLATE_ID = 2L;
-    public static final Long RESET_PASS_CHANGE_TEMPLATE_ID = 3L;
-    public static final Long PASS_CHANGE_TEMPLATE_ID = 4L;
+    public static final Long RESET_PASS_TEMPLATE_ID = 1L;
+    public static final Long RESET_PASS_CHANGE_TEMPLATE_ID = 2L;
+    public static final Long PASS_CHANGE_TEMPLATE_ID = 3L;
 
     public static final int TIME_INTERVAL = 30000 * 60;
 
@@ -26,9 +27,6 @@ public class Constants {
     public static final String MESSAGE = "message";
 
     // Error Code
-    public static final String ID = "id";
-    public static final String ENTITY = "entity";
-
     public static final String AUTHENTICATE_SERVICE_0001 = "authenticate_service_0001";
     public static final String AUTHENTICATE_SERVICE_0001_DESCRIPTION = "Not defined.";
 
@@ -50,8 +48,8 @@ public class Constants {
     public static final String AUTHENTICATE_SERVICE_0007 = "authenticate_service_0007";
     public static final String AUTHENTICATE_SERVICE_0007_DESCRIPTION = "Token expired.";
 
-    public static final String AUTHENTICATE_SERVICE_0008 = "authenticate_service_0008";
-    public static final String AUTHENTICATE_SERVICE_0008_DESCRIPTION = "Params are missing.";
+    static final String AUTHENTICATE_SERVICE_0008 = "authenticate_service_0008";
+    static final String AUTHENTICATE_SERVICE_0008_DESCRIPTION = "Params are missing.";
 
     public static final String AUTHENTICATE_SERVICE_0009 = "authenticate_service_0009";
     public static final String AUTHENTICATE_SERVICE_0009_DESCRIPTION = "JSON read/write failed.";
@@ -64,13 +62,4 @@ public class Constants {
 
     public static final String AUTHENTICATE_SERVICE_0012 = "authenticate_service_0012";
     public static final String AUTHENTICATE_SERVICE_0012_DESCRIPTION = "Error from another api call.";
-
-
-    /*
-    public static final String AUTHENTICATE_SERVICE_0049 = "authenticate_service_0049";
-    public static final String AUTHENTICATE_SERVICE_0049_DESCRIPTION = "Database error occurs.";
-
-    public static final String AUTHENTICATE_SERVICE_0050 = "authenticate_service_0050";
-    public static final String AUTHENTICATE_SERVICE_0050_DESCRIPTION = "Internal server error.";
-    */
 }

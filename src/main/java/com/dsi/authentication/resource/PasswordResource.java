@@ -23,6 +23,7 @@ import com.wordnik.swagger.annotations.ApiResponses;
 import io.jsonwebtoken.Claims;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -87,11 +88,11 @@ public class PasswordResource {
             Tenant tenant = tenantService.getTenantByID(tenantId);
 
             JSONObject contentObj = new JSONObject();
-            contentObj.put("recipient", login.getEmail());
+            contentObj.put("Recipients", new JSONArray().put(login.getEmail()));
             contentObj.put("EmployeeFirstName", login.getFirstName());
             contentObj.put("EmployeeLastName", login.getLastName());
-            contentObj.put("link", resetUrl + token);
-            contentObj.put("tenantName", tenant.getName());
+            contentObj.put("Link", resetUrl + token);
+            contentObj.put("TenantName", tenant.getName());
 
             logger.info("Notification create api call: " + Utility.getNotificationObject(contentObj,
                     Constants.RESET_PASS_TEMPLATE_ID));
@@ -155,11 +156,11 @@ public class PasswordResource {
                 Tenant tenant = tenantService.getTenantByID(tenantId);
 
                 JSONObject contentObj = new JSONObject();
-                contentObj.put("recipient", login.getEmail());
+                contentObj.put("Recipients", new JSONArray().put(login.getEmail()));
                 contentObj.put("EmployeeFirstName", login.getFirstName());
                 contentObj.put("EmployeeLastName", login.getLastName());
                 contentObj.put("NewPassword", newPassword);
-                contentObj.put("tenantName", tenant.getName());
+                contentObj.put("TenantName", tenant.getName());
 
                 logger.info("Notification create api call: " + Utility.getNotificationObject(contentObj,
                         Constants.RESET_PASS_CHANGE_TEMPLATE_ID));
@@ -230,10 +231,10 @@ public class PasswordResource {
                 logger.info("Update login info successfully.");
 
                 JSONObject contentObj = new JSONObject();
-                contentObj.put("recipient", login.getEmail());
+                contentObj.put("Recipients", new JSONArray().put(login.getEmail()));
                 contentObj.put("EmployeeFirstName", login.getFirstName());
                 contentObj.put("EmployeeLastName", login.getLastName());
-                contentObj.put("tenantName", parseToken.getIssuer());
+                contentObj.put("TenantName", parseToken.getIssuer());
 
                 logger.info("Notification create api call: " + Utility.getNotificationObject(contentObj,
                         Constants.PASS_CHANGE_TEMPLATE_ID));

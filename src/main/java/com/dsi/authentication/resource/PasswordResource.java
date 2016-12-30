@@ -94,10 +94,10 @@ public class PasswordResource {
             contentObj.put("Link", resetUrl + token);
             contentObj.put("TenantName", tenant.getName());
 
-            logger.info("Notification create api call: " + Utility.getNotificationObject(contentObj,
+            logger.info("Notification create api call: " + Utility.getNotificationList(contentObj,
                     Constants.RESET_PASS_TEMPLATE_ID));
 
-            String result = httpClient.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationObject(contentObj,
+            String result = httpClient.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationList(contentObj,
                     Constants.RESET_PASS_TEMPLATE_ID), Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
 
             JSONObject resultObj = new JSONObject(result);
@@ -162,10 +162,10 @@ public class PasswordResource {
                 contentObj.put("NewPassword", newPassword);
                 contentObj.put("TenantName", tenant.getName());
 
-                logger.info("Notification create api call: " + Utility.getNotificationObject(contentObj,
+                logger.info("Notification create api call: " + Utility.getNotificationList(contentObj,
                         Constants.RESET_PASS_CHANGE_TEMPLATE_ID));
 
-                String result = httpClient.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationObject(contentObj,
+                String result = httpClient.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationList(contentObj,
                         Constants.RESET_PASS_CHANGE_TEMPLATE_ID), Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
 
                 JSONObject resultObj = new JSONObject(result);
@@ -236,10 +236,10 @@ public class PasswordResource {
                 contentObj.put("EmployeeLastName", login.getLastName());
                 contentObj.put("TenantName", parseToken.getIssuer());
 
-                logger.info("Notification create api call: " + Utility.getNotificationObject(contentObj,
+                logger.info("Notification create api call: " + Utility.getNotificationList(contentObj,
                         Constants.PASS_CHANGE_TEMPLATE_ID));
 
-                String result = httpClient.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationObject(contentObj,
+                String result = httpClient.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationList(contentObj,
                         Constants.PASS_CHANGE_TEMPLATE_ID), Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
 
                 JSONObject resultObj = new JSONObject(result);

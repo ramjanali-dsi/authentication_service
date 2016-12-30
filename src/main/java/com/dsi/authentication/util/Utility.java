@@ -5,6 +5,7 @@ import com.dsi.authentication.exception.ErrorContext;
 import com.dsi.authentication.exception.ErrorMessage;
 import com.dsi.authentication.model.Login;
 import org.apache.log4j.Logger;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -100,7 +101,10 @@ public class Utility {
         return userObj.toString();
     }
 
-    public static String getNotificationObject(JSONObject contentObj, Long templateId) throws JSONException {
+    public static String getNotificationList(JSONObject contentObj, Long templateId) throws JSONException {
+
+        JSONArray notificationList = new JSONArray();
+
         JSONObject notificationObj = new JSONObject();
         notificationObj.put("notificationTypeId", Constants.NOTIFICATION_EMAIL_TYPE_ID);
         notificationObj.put("notificationTemplateId", templateId);
@@ -110,6 +114,7 @@ public class Utility {
         notificationObj.put("processed", true);
         notificationObj.put("retryInterval", 1);
 
-        return notificationObj.toString();
+        notificationList.put(notificationObj);
+        return notificationList.toString();
     }
 }

@@ -5,9 +5,9 @@ import com.dsi.authentication.exception.ErrorContext;
 import com.dsi.authentication.exception.ErrorMessage;
 import com.dsi.authentication.service.TokenService;
 import com.dsi.authentication.service.impl.APIProvider;
+import com.dsi.authentication.service.impl.CallAnotherResource;
 import com.dsi.authentication.service.impl.TokenServiceImpl;
 import com.dsi.authentication.util.Constants;
-import com.dsi.httpclient.HttpClient;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
@@ -39,7 +39,7 @@ public class TokenResource {
     private static final Logger logger = Logger.getLogger(TokenResource.class);
 
     private static final TokenService tokenService = new TokenServiceImpl();
-    private static final HttpClient httpClient = new HttpClient();
+    private static final CallAnotherResource callAnotherService = new CallAnotherResource();
 
     @Context
     HttpServletRequest request;
@@ -69,15 +69,7 @@ public class TokenResource {
             bodyObj.put("userId", parseToken.getId());
             bodyObj.put("accessToken", accessToken);
             bodyObj.put("newAccessToken", newAccessToken);
-
-            String result = httpClient.sendPut(APIProvider.API_USER_SESSION, bodyObj.toString(),
-                    Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
-            logger.info("v1/user_session api call result: " + result);
-
-            JSONObject anotherApiResultObj = new JSONObject(result);
-            if(!anotherApiResultObj.has(Constants.MESSAGE)){
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
-            }
+            callAnotherService.sendPut(APIProvider.API_USER_SESSION, bodyObj.toString());
 
             return Response.ok().entity(responseObj.toString()).build();
 

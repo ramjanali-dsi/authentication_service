@@ -8,14 +8,10 @@ import com.dsi.authentication.model.Tenant;
 import com.dsi.authentication.service.LoginService;
 import com.dsi.authentication.service.TenantService;
 import com.dsi.authentication.service.TokenService;
-import com.dsi.authentication.service.impl.APIProvider;
-import com.dsi.authentication.service.impl.LoginServiceImpl;
-import com.dsi.authentication.service.impl.TenantServiceImpl;
-import com.dsi.authentication.service.impl.TokenServiceImpl;
+import com.dsi.authentication.service.impl.*;
 import com.dsi.authentication.util.Constants;
 import com.dsi.authentication.util.PasswordHash;
 import com.dsi.authentication.util.Utility;
-import com.dsi.httpclient.HttpClient;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
@@ -48,7 +44,7 @@ public class PasswordResource {
     private static final TokenService tokenService = new TokenServiceImpl();
     private static final LoginService loginService = new LoginServiceImpl();
     private static final TenantService tenantService = new TenantServiceImpl();
-    private static final HttpClient httpClient = new HttpClient();
+    private static final CallAnotherResource callAnotherService = new CallAnotherResource();
 
     @Context
     HttpServletRequest request;
@@ -94,17 +90,10 @@ public class PasswordResource {
             contentObj.put("Link", resetUrl + token);
             contentObj.put("TenantName", tenant.getName());
 
-            logger.info("Notification create api call: " + Utility.getNotificationList(contentObj,
+            logger.info("Notification create:: Start");
+            callAnotherService.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationList(contentObj,
                     Constants.RESET_PASS_TEMPLATE_ID));
-
-            String result = httpClient.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationList(contentObj,
-                    Constants.RESET_PASS_TEMPLATE_ID), Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
-
-            JSONObject resultObj = new JSONObject(result);
-            if(!resultObj.has(Constants.MESSAGE)){
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
-            }
-            logger.info("An email processing start for reset password link.");
+            logger.info("Notification create:: End");
 
             responseObj.put(Constants.MESSAGE, "Reset password request success");
             return Response.ok().entity(responseObj.toString()).build();
@@ -162,17 +151,10 @@ public class PasswordResource {
                 contentObj.put("NewPassword", newPassword);
                 contentObj.put("TenantName", tenant.getName());
 
-                logger.info("Notification create api call: " + Utility.getNotificationList(contentObj,
+                logger.info("Notification create:: Start");
+                callAnotherService.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationList(contentObj,
                         Constants.RESET_PASS_CHANGE_TEMPLATE_ID));
-
-                String result = httpClient.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationList(contentObj,
-                        Constants.RESET_PASS_CHANGE_TEMPLATE_ID), Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
-
-                JSONObject resultObj = new JSONObject(result);
-                if(!resultObj.has(Constants.MESSAGE)){
-                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
-                }
-                logger.info("An email processing start for reset password confirmation.");
+                logger.info("Notification create:: End");
 
                 logger.info("Password reset successfully.");
                 responseObj.put(Constants.MESSAGE, "Password reset success");
@@ -236,17 +218,10 @@ public class PasswordResource {
                 contentObj.put("EmployeeLastName", login.getLastName());
                 contentObj.put("TenantName", parseToken.getIssuer());
 
-                logger.info("Notification create api call: " + Utility.getNotificationList(contentObj,
+                logger.info("Notification create:: Start");
+                callAnotherService.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationList(contentObj,
                         Constants.PASS_CHANGE_TEMPLATE_ID));
-
-                String result = httpClient.sendPost(APIProvider.API_NOTIFICATION_CREATE, Utility.getNotificationList(contentObj,
-                        Constants.PASS_CHANGE_TEMPLATE_ID), Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
-
-                JSONObject resultObj = new JSONObject(result);
-                if(!resultObj.has(Constants.MESSAGE)){
-                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
-                }
-                logger.info("An email processing start for change password confirmation.");
+                logger.info("Notification create:: End");
 
                 responseObj.put(Constants.MESSAGE, "Password change success");
                 return Response.ok().entity(responseObj.toString()).build();

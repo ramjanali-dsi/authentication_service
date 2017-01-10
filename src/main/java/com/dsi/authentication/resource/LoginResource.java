@@ -9,13 +9,11 @@ import com.dsi.authentication.service.*;
 import com.dsi.authentication.service.impl.*;
 import com.dsi.authentication.util.Constants;
 import com.dsi.authentication.util.Utility;
-import com.dsi.httpclient.HttpClient;
 import com.google.gson.Gson;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
-import com.wordnik.swagger.jaxrs.PATCH;
 import io.jsonwebtoken.Claims;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
@@ -43,7 +41,7 @@ public class LoginResource {
     private static final TenantService tenantService = new TenantServiceImpl();
     private static final LoginFactory loginFactory = new LoginFactoryImpl();
     private static final TokenService tokenService = new TokenServiceImpl();
-    private static final HttpClient httpClient = new HttpClient();
+    private static final CallAnotherResource callAnotherService = new CallAnotherResource();
 
     @Context
     HttpServletRequest request;
@@ -95,15 +93,7 @@ public class LoginResource {
             userSessionObj.put("createBy", login.getUserId());
             userSessionObj.put("modifiedBy", login.getUserId());
             userSessionObj.put("accessToken", accessToken);
-
-            String result = httpClient.sendPost(APIProvider.API_USER_SESSION, userSessionObj.toString(),
-                    Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
-            logger.info("v1/user_session api call result: " + result);
-
-            JSONObject anotherApiResultObj = new JSONObject(result);
-            if(!anotherApiResultObj.has(Constants.MESSAGE)){
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
-            }
+            callAnotherService.sendPost(APIProvider.API_USER_SESSION, userSessionObj.toString());
 
             return Response.ok().entity(responseObj.toString()).build();
 
@@ -133,15 +123,7 @@ public class LoginResource {
             JSONObject bodyObj = new JSONObject();
             bodyObj.put("userId", parseToken.getId());
             bodyObj.put("accessToken", accessToken);
-
-            String result = httpClient.sendDelete(APIProvider.API_USER_SESSION, bodyObj.toString(),
-                    Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
-            logger.info("v1/user_session api call result: " + result);
-
-            JSONObject anotherApiResultObj = new JSONObject(result);
-            if(!anotherApiResultObj.has(Constants.MESSAGE)){
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
-            }
+            callAnotherService.sendDelete(APIProvider.API_USER_SESSION, bodyObj.toString());
 
             responseObj.put(Constants.MESSAGE, "Delete user session success");
             return Response.ok().entity(responseObj.toString()).build();
@@ -172,15 +154,7 @@ public class LoginResource {
             JSONObject bodyObj = new JSONObject();
             bodyObj.put("userId", parseToken.getId());
             bodyObj.put("accessToken", accessToken);
-
-            String result = httpClient.sendPost(APIProvider.API_USER_SESSION_VALID, bodyObj.toString(),
-                    Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
-            logger.info("v1/user_session/is_valid api call result: " + result);
-
-            JSONObject anotherApiResultObj = new JSONObject(result);
-            if(!anotherApiResultObj.has(Constants.MESSAGE)){
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
-            }
+            callAnotherService.sendPost(APIProvider.API_USER_SESSION_VALID, bodyObj.toString());
 
             String subject = parseToken.getSubject();
             logger.info("ParseToken Subject: " + subject);
@@ -212,16 +186,7 @@ public class LoginResource {
 
             logger.info("Login create:: start");
             String currentUserID = login.getCreateBy();
-
-            logger.info("Request body for user create: " + Utility.getUserObject(login, currentUserID));
-            String result = httpClient.sendPost(APIProvider.API_USER, Utility.getUserObject(login, currentUserID),
-                    Constants.SYSTEM, Constants.SYSTEM_HEADER_ID);
-            logger.info("v1/user api call result: " + result);
-
-            JSONObject resultObj = new JSONObject(result);
-            if (!resultObj.has(Constants.MESSAGE)) {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(result).build();
-            }
+            JSONObject resultObj = callAnotherService.sendPost(APIProvider.API_USER, Utility.getUserObject(login, currentUserID));
 
             login.setUserId(resultObj.getString("user_id"));
             String password = loginService.saveLoginInfo(login);

@@ -8,6 +8,7 @@ import scala.util.parsing.combinator.testing.Str;
 public class Constants {
 
     public static final String AUTHORIZATION = "authorization";
+    public static final String TENANT_ID = "tenant_id";
 
     public static final String SYSTEM = "system";
     public static final String SYSTEM_HEADER_ID = "0759a760-b9df-4c8a-8a64-fa31f256d13b";

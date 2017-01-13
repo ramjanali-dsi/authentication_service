@@ -91,6 +91,8 @@ public class LoginServiceImpl implements LoginService {
             throw new CustomException(errorMessage);
         }
 
+        existLogin.setFirstName(login.getFirstName());
+        existLogin.setLastName(login.getLastName());
         existLogin.setActive(login.isActive());
         existLogin.setModifiedBy(login.getModifiedBy());
         existLogin.setModifiedDate(Utility.today());

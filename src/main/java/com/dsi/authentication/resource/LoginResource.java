@@ -216,11 +216,15 @@ public class LoginResource {
         JSONObject responseObj = new JSONObject();
 
         try {
+            String currentUserID = login.getCreateBy();
             logger.info("Request body: " + new Gson().toJson(login));
             logger.info("UserId: " + userId);
             logger.info("Login update:: start");
             loginService.updateLoginInfo(login, userId);
             logger.info("Login update:: end");
+
+            callAnotherService.sendPut(APIProvider.API_USER + "/" + userId,
+                    Utility.getUserObject(login, currentUserID));
 
             responseObj.put(Constants.MESSAGE, "Update login success.");
             return Response.ok().entity(responseObj.toString()).build();

@@ -57,21 +57,17 @@ public class LoginResource {
         JSONObject requestObj;
 
         try {
-            logger.info("Request Body: " + requestBody);
-
+            logger.info("Request Body:: " + requestBody);
             requestObj = new JSONObject(requestBody);
             String username = Utility.validation(requestObj, "username");
             String password = Utility.validation(requestObj, "password");
             String tenantID = Utility.validation(requestObj, "tenant_id");
 
             Tenant tenant = tenantService.getTenantByID(tenantID);
-            logger.info("Tenant active.");
-
             String authHandlerClassName = tenant.getAuthHandler().getTypeImpl();
             logger.info("Auth handler class name: " + authHandlerClassName);
 
             LoginHandler loginHandler = (LoginHandler) loginFactory.getInstance(authHandlerClassName);
-
             Login login = loginHandler.validateUser(username, password);
             logger.info("Login successfully.");
 
@@ -182,17 +178,17 @@ public class LoginResource {
         JSONObject responseObj = new JSONObject();
 
         try {
-            logger.info("Request body: " + new Gson().toJson(login));
-
             logger.info("Login create:: start");
             String currentUserID = login.getCreateBy();
-            JSONObject resultObj = callAnotherService.sendPost(APIProvider.API_USER, Utility.getUserObject(login, currentUserID));
+            JSONObject resultObj = callAnotherService.sendPost(APIProvider.API_USER,
+                    Utility.getUserObject(login, currentUserID));
 
             login.setUserId(resultObj.getString("user_id"));
             String password = loginService.saveLoginInfo(login);
             logger.info("Login create:: end");
 
             responseObj.put("user_id", login.getUserId());
+            responseObj.put("role_name", resultObj.getString("role_name"));
             responseObj.put("password", password);
             responseObj.put(Constants.MESSAGE, "Create login success.");
             return Response.ok().entity(responseObj.toString()).build();
@@ -216,15 +212,9 @@ public class LoginResource {
         JSONObject responseObj = new JSONObject();
 
         try {
-            String currentUserID = login.getCreateBy();
-            logger.info("Request body: " + new Gson().toJson(login));
-            logger.info("UserId: " + userId);
             logger.info("Login update:: start");
             loginService.updateLoginInfo(login, userId);
             logger.info("Login update:: end");
-
-            callAnotherService.sendPut(APIProvider.API_USER + "/" + userId,
-                    Utility.getUserObject(login, currentUserID));
 
             responseObj.put(Constants.MESSAGE, "Update login success.");
             return Response.ok().entity(responseObj.toString()).build();

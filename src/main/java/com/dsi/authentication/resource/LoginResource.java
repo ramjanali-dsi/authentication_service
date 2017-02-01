@@ -78,6 +78,10 @@ public class LoginResource {
             responseObj.put("user_id", login.getUserId());
             responseObj.put("username", login.getEmail());
 
+            JSONObject resultObj = callAnotherService.getRequest(APIProvider.API_USER_CONTEXT + login.getUserId());
+            String context = resultObj.has("context") ? resultObj.getString("context") : null;
+            responseObj.put("context", context);
+
             String accessToken = tokenService.createToken(login.getUserId(), tenant.getName(),
                     responseObj.toString(), Constants.TIME_INTERVAL);
 

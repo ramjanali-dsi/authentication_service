@@ -16,9 +16,9 @@ public class Constants {
     static final String SYSTEM_ID = "425744ba-6c10-47c0-91cf-5a4c05265b56";
 
     static final Long NOTIFICATION_EMAIL_TYPE_ID = 1L;
-    public static final Long RESET_PASS_TEMPLATE_ID = 1L;
-    public static final Long RESET_PASS_CHANGE_TEMPLATE_ID = 2L;
-    public static final Long PASS_CHANGE_TEMPLATE_ID = 3L;
+    public static final Long RESET_PASS_TEMPLATE_ID = 8L;
+    public static final Long RESET_PASS_CHANGE_TEMPLATE_ID = 9L;
+    public static final Long PASS_CHANGE_TEMPLATE_ID = 10L;
 
     public static final int TIME_INTERVAL = 30000 * 60;
 

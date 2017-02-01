@@ -31,6 +31,7 @@ public class APIProvider {
 
     public static final String BASE_URL = apiProp.getProperty("base.url");
     public static final String API_USER = BASE_URL + apiProp.getProperty("authorization.user");
+    public static final String API_USER_CONTEXT = BASE_URL + apiProp.getProperty("authorization.user.context");
     public static final String API_USER_SESSION = BASE_URL + apiProp.getProperty("authorization.user.session");
     public static final String API_USER_SESSION_VALID = BASE_URL + apiProp.getProperty("authorization.user.session.valid");
 }

@@ -24,9 +24,7 @@ public class Constants {
 
     public static final int TIME_INTERVAL = 30000 * 60;
 
-    public static final String SALT = "87c63aae-917c-42ce-b4c7-8a4847db4133";
-    public static final String SECRET_KEY = "MTUxMWFlMjctNWZjNS00YmVlLWJlZTMtYmRkNTY2ZWQyY2E3NDg2YTNlNDktNTA0MS00NWRjLTg3NDktNGU5NGJhY2IwN2M3";
-
+    
     public static final String MESSAGE = "message";
 
     // Error Code

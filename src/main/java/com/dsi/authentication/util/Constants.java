@@ -11,9 +11,9 @@ public class Constants {
     public static final String TENANT_ID = "tenant_id";
 
     public static final String SYSTEM = "system";
-    public static final String SYSTEM_HEADER_ID = "0759a760-b9df-4c8a-8a64-fa31f256d13b";
+    public static final String SYSTEM_HEADER_ID = "_system_header_id_";
 
-    static final String SYSTEM_ID = "425744ba-6c10-47c0-91cf-5a4c05265b56";
+    static final String SYSTEM_ID = "_system_id_";
 
     public static final String WEBSITE_LINK = "http://dem.dsinnovators.com/#!/";
 
@@ -24,7 +24,9 @@ public class Constants {
 
     public static final int TIME_INTERVAL = 30000 * 60;
 
-    
+    public static final String SALT = "_salt_id_";
+    public static final String SECRET_KEY = "_secret_key_";
+
     public static final String MESSAGE = "message";
 
     // Error Code

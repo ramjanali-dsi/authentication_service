@@ -149,6 +149,7 @@ public class PasswordResource {
                 contentObj.put("EmployeeFirstName", login.getFirstName());
                 contentObj.put("EmployeeLastName", login.getLastName());
                 contentObj.put("NewPassword", newPassword);
+                contentObj.put("Link", Constants.WEBSITE_LINK);
                 contentObj.put("TenantName", tenant.getName());
 
                 logger.info("Notification create:: Start");
@@ -216,6 +217,7 @@ public class PasswordResource {
                 contentObj.put("Recipients", new JSONArray().put(login.getEmail()));
                 contentObj.put("EmployeeFirstName", login.getFirstName());
                 contentObj.put("EmployeeLastName", login.getLastName());
+                contentObj.put("Link", Constants.WEBSITE_LINK);
                 contentObj.put("TenantName", parseToken.getIssuer());
 
                 logger.info("Notification create:: Start");

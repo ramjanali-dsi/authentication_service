@@ -93,7 +93,10 @@ public class LoginResource {
             userSessionObj.put("createBy", login.getUserId());
             userSessionObj.put("modifiedBy", login.getUserId());
             userSessionObj.put("accessToken", accessToken);
-            callAnotherService.sendPost(APIProvider.API_USER_SESSION, userSessionObj.toString());
+            resultObj = callAnotherService.sendPost(APIProvider.API_USER_SESSION, userSessionObj.toString());
+            if(resultObj.has("roleName")){
+                responseObj.put("roleName", resultObj.getString("roleName"));
+            }
 
             return Response.ok().entity(responseObj.toString()).build();
 
